@@ -46,7 +46,7 @@
   const nonInteractive = cmd => /npx (-y )?skills(@latest)? add/.test(cmd) && !/\s-y(\s|$)/.test(cmd) ? cmd + " -a claude-code -y" : cmd;
 
   function buildPrompt(s) {
-    const site = CFG.siteUrl;
+    const site = CFG.siteUrl || (location.protocol.startsWith("http") ? location.origin + location.pathname : "");
     if (s.kind === "file") {
       return [
         `Add a DESIGN.md design system to my project from ${repoUrl(s)}.`,

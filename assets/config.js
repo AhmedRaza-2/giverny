@@ -8,8 +8,9 @@ window.GIVERNY_CONFIG = {
   // The repository visitors star to unlock (owner/name).
   repo: "AhmedRaza-2/giverny",
 
-  // Public URL of the site, used in the copied prompts.
-  siteUrl: "https://ahmedraza-2.github.io/giverny/",
+  // Public URL added to copied prompts. Leave empty to use whatever domain the page is served from
+  // (works on GitHub Pages, Vercel, or a custom domain without changes).
+  siteUrl: "",
 
   // Everything is free until this date (YYYY-MM-DD, visitor's local time).
   // After it, copying needs a follow + star. Set to "2000-01-01" to gate right away,
