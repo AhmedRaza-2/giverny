@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Giverny launch carousel</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#F3F6F3; --ink:#12282B; --ink2:#4B6163; --ink3:#75898A; --line:#D8E2DD; --bridge:#1D6A4D; --soft:#E1EFE7; --pad:#5E9B6E; --lily:#E58AAE; --deep:#B9476F; --water:#3F7F99; --wis:#7A69C4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ccc; font-family: Geist, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .slide { width: 1080px; height: 1350px; background: var(--paper); position: relative; overflow: hidden; padding: 96px 96px 0; margin: 0 0 40px; display: flex; flex-direction: column; }
+  .slide.story { height: 1920px; padding-top: 180px; }
+  .slide.dark { background: #0F1E20; color: #E4EDE9; --ink2:#A3B6B2; --ink3:#788D8A; --line:#26393B; --soft:#193A2E; --bridge:#6BC79C; }
+  h1, h2 { font-family: "Young Serif", serif; font-weight: 400; letter-spacing: -.035em; margin: 0; }
+  h1 { font-size: 112px; line-height: .98; }
+  h2 { font-size: 84px; line-height: 1.02; }
+  .sub { font-size: 38px; line-height: 1.38; color: var(--ink2); margin: 40px 0 0; max-width: 24em; }
+  .foot { position: absolute; left: 96px; right: 96px; bottom: 72px; display: flex; justify-content: space-between; align-items: center; font-size: 28px; color: var(--ink3); }
+  .brand { display: inline-flex; align-items: center; gap: 14px; font-family: "Young Serif", serif; font-size: 34px; color: var(--ink); }
+  .brand svg { width: 46px; height: 46px; }
+  .pond { position: absolute; display: block; }
+  .shot { margin-top: 64px; border-radius: 28px; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(18,40,43,.45); border: 1px solid var(--line); background: #fff; }
+  .shot img { display: block; width: 100%; }
+  .steps { list-style: none; padding: 0; margin: 64px 0 0; counter-reset: s; display: grid; gap: 44px; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 84px 1fr; gap: 28px; align-items: start; }
+  .steps li::before { content: counter(s); font-family: "Young Serif", serif; font-size: 64px; line-height: 1; color: var(--deep); }
+  .steps b { display: block; font-size: 42px; font-weight: 600; margin-bottom: 6px; }
+  .steps span { font-size: 32px; color: var(--ink2); line-height: 1.4; }
+  .prompt { margin-top: 56px; background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 34px 38px; font: 25px/1.6 "Geist Mono", monospace; color: var(--ink); white-space: pre-wrap; position: relative; }
+  .prompt .tag { position: absolute; top: -22px; left: 32px; background: var(--bridge); color: #fff; font: 600 22px Geist, sans-serif; padding: 8px 18px; border-radius: 12px; }
+  .five { list-style: none; padding: 0; margin: 56px 0 0; display: grid; gap: 0; border-top: 2px solid var(--ink); }
+  .five li { display: grid; grid-template-columns: 1fr auto; gap: 6px 24px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+  .five .n { font-family: "Young Serif", serif; font-size: 44px; letter-spacing: -.01em; }
+  .five .by { font-size: 26px; color: var(--ink3); align-self: center; text-align: right; }
+  .five .d { grid-column: 1 / -1; font-size: 30px; color: var(--ink2); line-height: 1.35; }
+  .url { margin-top: 56px; display: inline-block; font: 500 50px "Geist Mono", monospace; letter-spacing: -.02em; color: var(--bridge); background: var(--soft); padding: 22px 34px; border-radius: 22px; }
+  .note { margin-top: 36px; font-size: 32px; color: var(--ink2); line-height: 1.4; }
+  .pill { display: inline-block; font: 600 26px Geist, sans-serif; color: var(--bridge); background: var(--soft); border-radius: 999px; padding: 10px 24px; margin-bottom: 44px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="lily" viewBox="0 0 32 32"><ellipse cx="16" cy="22" rx="14" ry="6.5" fill="#5E9B6E"/><path d="M16 22 L28 19 A14 6.5 0 0 1 30 22 Z" fill="currentColor"/><path d="M16 21c-4-2-6-6-5.5-10 2.5 1 4.6 3.4 5.5 6 .9-2.6 3-5 5.5-6 .5 4-1.5 8-5.5 10z" fill="#E58AAE"/><path d="M16 21c-1.6-3-1.6-8 0-12 1.6 4 1.6 9 0 12z" fill="#B9476F"/></symbol></svg>
+
+<!-- 1. Hook -->
+<section class="slide" id="s1">
+  <canvas class="pond" data-seed="7" style="left:360px; top:690px; width:820px; height:560px"></canvas>
+  <div class="brand" style="color:var(--ink)"><svg style="color:var(--paper)"><use href="#lily"/></svg>Giverny</div>
+  <h1 style="margin-top:96px">Your AI-built website looks like everyone else’s.</h1>
+  <p class="sub" style="max-width:15em">Here’s how to fix it in 30 seconds.</p>
+  <div class="foot"><span>Swipe</span><span>1 / 6</span></div>
+</section>
+
+<!-- 2. Insight -->
+<section class="slide" id="s2">
+  <h2 style="font-size:74px">Claude doesn’t lack skill.<br>It lacks skills.</h2>
+  <p class="sub">Skills are small instruction packs Claude Code loads by itself when your task matches.</p>
+  <p class="sub">Anthropic, Vercel, Google, Figma and top designers have published dozens of them for design and UI work. Most people have never installed one.</p>
+  <canvas class="pond" data-seed="21" style="left:520px; top:980px; width:640px; height:330px"></canvas>
+  <div class="foot"><span></span><span>2 / 6</span></div>
+</section>
+
+<!-- 3. The product -->
+<section class="slide" id="s3">
+  <h2 style="font-size:76px">They were scattered across 40 GitHub repos. Now they’re on one page.</h2>
+  <div class="shot" style="margin-top:48px; width:780px; align-self:center"><img src="src-list.png" alt=""></div>
+  <div class="foot"><span>54 skills, checked, free</span><span>3 / 6</span></div>
+</section>
+
+<!-- 4. How -->
+<section class="slide" id="s4">
+  <h2>How to use it</h2>
+  <ol class="steps">
+    <li><div><b>Pick a skill</b><span>Search or browse seven categories.</span></div></li>
+    <li><div><b>Click “Copy prompt”</b><span>It holds the exact install command from the author’s repo.</span></div></li>
+    <li><div><b>Paste it into Claude Code</b><span>Claude installs the skill and shows you how to use it.</span></div></li>
+  </ol>
+  <div class="prompt"><span class="tag">What you paste</span>Install "Impeccable" for Claude Code from
+https://github.com/pbakaus/impeccable.
+
+1. Run this in my terminal:
+   npx impeccable install
+…</div>
+  <div class="foot"><span></span><span>4 / 6</span></div>
+</section>
+
+<!-- 5. Start here -->
+<section class="slide" id="s5">
+  <h2>Start with these five</h2>
+  <ol class="five">
+    <li><span class="n">Frontend Design</span><span class="by">Anthropic</span><span class="d">Makes Claude commit to a real aesthetic instead of a template.</span></li>
+    <li><span class="n">Impeccable</span><span class="by">Paul Bakaus</span><span class="d">Critique, polish and audit commands that catch AI slop.</span></li>
+    <li><span class="n">UI UX Pro Max</span><span class="by">153k stars</span><span class="d">Picks a full design system before writing any code.</span></li>
+    <li><span class="n">Emil Kowalski’s Skills</span><span class="by">Sonner, Vaul</span><span class="d">Animations and interactions that feel hand-crafted.</span></li>
+    <li><span class="n">Web Design Guidelines</span><span class="by">Vercel</span><span class="d">100+ accessibility and UX checks on your code.</span></li>
+  </ol>
+  <div class="foot"><span></span><span>5 / 6</span></div>
+</section>
+
+<!-- 6. CTA -->
+<section class="slide dark" id="s6">
+  <canvas class="pond" data-seed="3" data-dark="1" style="left:300px; top:760px; width:900px; height:560px"></canvas>
+  <span class="pill" style="align-self:flex-start">Version 1.0</span>
+  <h1>Give Claude taste.</h1>
+  <p class="sub" style="color:#A3B6B2">54 design skills for Claude Code. Free. Many more coming very soon.</p>
+  <div><span class="url">giverny-two.vercel.app</span></div>
+  <div class="foot"><span>Link in bio and comments</span><span>6 / 6</span></div>
+</section>
+
+<!-- Story -->
+<section class="slide story" id="story">
+  <div class="brand"><svg style="color:var(--paper)"><use href="#lily"/></svg>Giverny</div>
+  <h1 style="margin-top:80px; font-size:128px">Give Claude taste.</h1>
+  <p class="sub">54 design skills for Claude Code. Copy one prompt, paste it, done. Free.</p>
+  <div class="shot" style="margin-top:64px; width:700px; align-self:center"><img src="src-list.png" alt=""></div>
+  <canvas class="pond" data-seed="11" style="left:200px; top:1640px; width:680px; height:260px"></canvas>
+</section>
+
+<script>
+function rng(seed){return()=>{seed|=0;seed=(seed+0x6D2B79F5)|0;let t=Math.imul(seed^(seed>>>15),1|seed);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
+function paint(cv){
+  const W=parseFloat(cv.style.width),H=parseFloat(cv.style.height);cv.width=W*2;cv.height=H*2;
+  const ctx=cv.getContext('2d');ctx.scale(2,2);ctx.lineCap='round';
+  const dark=cv.dataset.dark, r=rng(+cv.dataset.seed), S=Math.max(W,H*1.25)/520;
+  const C=dark?{w:'#7DB7CF',v:'#ABA0EB',l:'#26393B',p:'#4F8A60',b:'#6BC79C'}:{w:'#3F7F99',v:'#7A69C4',l:'#D8E2DD',p:'#5E9B6E',b:'#1D6A4D'};
+  const d=[],wc=[C.w,C.w,C.v,C.l,C.p],n=Math.round(620*(W*H)/(520*520));
+  for(let i=0;i<n;i++){const x=r()*W,y=r()*H,dx=(x/W-.5)*2,dy=(y/H-.5)*2,e=1-Math.min(1,Math.hypot(dx*.9,dy*.98)+(r()-.5)*.3);if(e<=.02)continue;
+    d.push({x,y,a:(r()-.5)*.22,len:(12+r()*30)*S,w:(3+r()*5)*S,c:wc[(r()*wc.length)|0],o:(.25+r()*.45)*Math.min(1,e*1.6)});}
+  [[.28,.3,.17],[.66,.24,.12],[.56,.6,.2],[.22,.72,.13],[.84,.66,.1]].forEach(([px,py,pr],k)=>{
+    const cx=px*W,cy=py*H,rx=pr*W,ry=rx*.38;
+    for(let i=0;i<70;i++){const t=r()*6.283,q=Math.sqrt(r());d.push({x:cx+Math.cos(t)*rx*q,y:cy+Math.sin(t)*ry*q,a:(r()-.5)*.5,len:(9+r()*18)*S,w:(3.5+r()*4.5)*S,c:r()<.62?C.p:C.b,o:.55+r()*.35,L:1});}
+    if(k%2===0||k===3){const fx=cx+(r()-.5)*rx*.5,fy=cy-ry*.25;for(let i=0;i<16;i++){d.push({x:fx+(r()-.5)*6*S,y:fy+(r()-.5)*3*S,a:-1.5708+(r()-.5)*2.2,len:(6+r()*10)*S,w:(3+r()*3)*S,c:r()<.55?'#E58AAE':'#B9476F',o:.8+r()*.2,L:2});}}
+  });
+  d.sort((a,b)=>(a.L||0)-(b.L||0)).forEach(s=>{ctx.globalAlpha=s.o;ctx.strokeStyle=s.c;ctx.lineWidth=s.w;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x+Math.cos(s.a)*s.len,s.y+Math.sin(s.a)*s.len);ctx.stroke();});
+}
+document.fonts.ready.then(()=>{document.querySelectorAll('canvas.pond').forEach(paint);document.body.dataset.ready=1;});
+</script>
+</body>
+</html>

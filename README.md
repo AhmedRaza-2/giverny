@@ -3,7 +3,7 @@
 <h1 align="center">Giverny</h1>
 <p align="center"><b>Give Claude taste.</b><br>Every design and frontend skill for Claude Code, checked and in one place.<br>Copy a prompt, paste it into Claude, and the skill installs itself.</p>
 
-<p align="center"><a href="https://ahmedraza-2.github.io/giverny/">Open Giverny</a> · <a href="CONTRIBUTING.md">Add a skill</a></p>
+<p align="center"><a href="https://giverny-two.vercel.app/">Open Giverny</a> · <a href="CONTRIBUTING.md">Add a skill</a></p>
 
 ---
 
@@ -46,6 +46,10 @@ Then open http://localhost:8080.
 **GitHub Pages:** Settings → Pages → Deploy from branch → `main` / root. The site appears at `https://<you>.github.io/giverny/`.
 
 Vercel, Netlify and Cloudflare Pages also work: import the repo with no build command and `/` as the output directory.
+
+## Analytics
+
+See [ANALYTICS.md](ANALYTICS.md) for visits, clicks and copies.
 
 ## Settings
 

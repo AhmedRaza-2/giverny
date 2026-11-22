@@ -10,10 +10,12 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Giverny: design skills for Claude">
   <meta property="og:description" content="Every UI, UX and frontend skill for Claude Code, verified and one copy away.">
-  <meta property="og:image" content="https://ahmedraza-2.github.io/giverny/og.png">
-  <meta property="og:url" content="https://ahmedraza-2.github.io/giverny/">
+  <meta property="og:image" content="https://giverny-two.vercel.app/og.png">
+  <meta property="og:url" content="https://giverny-two.vercel.app/">
+  <link rel="canonical" href="https://giverny-two.vercel.app/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -29,7 +31,7 @@
   <header class="top">
     <a class="brand" href="./" aria-label="Giverny home">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#lily"/></svg>
-      <span>Giverny</span>
+      <span>Giverny</span><span class="ver" title="Version 1.0">v1.0</span>
     </a>
     <nav class="top-nav" aria-label="Site">
       <a href="#how">How it works</a>
@@ -64,6 +66,16 @@
         <p>No skill matches “<span id="empty-q"></span>”.</p>
         <p>Try a broader word, or <a id="empty-submit" href="#">suggest a skill</a> we’re missing.</p>
       </div>
+      <aside class="soon" aria-labelledby="soon-title">
+        <div>
+          <h2 id="soon-title">Many more skills are on the way.</h2>
+          <p>This is version 1.0. More design and frontend skills are being added very soon. Star the repo to see them first, or suggest one we’re missing.</p>
+        </div>
+        <div class="soon-actions">
+          <a class="btn btn-primary" id="soon-star" href="#" target="_blank" rel="noopener">Star on GitHub</a>
+          <a class="btn" id="soon-submit" href="#" target="_blank" rel="noopener">Suggest a skill</a>
+        </div>
+      </aside>
     </section>
 
     <section class="how" id="how" aria-labelledby="how-title">
@@ -88,7 +100,7 @@
 
   <footer class="foot">
     <p>Giverny is named for the garden where the other Claude, Claude Monet, painted his water lilies.</p>
-    <p>An independent, open-source index. Not affiliated with Anthropic. Every skill belongs to its author; check each repo’s license before use. Index checked <span id="updated"></span>.</p>
+    <p>An independent, open-source index. Not affiliated with Anthropic. Every skill belongs to its author; check each repo’s license before use. Version 1.0, index checked <span id="updated"></span>. Anonymous usage stats (pages, clicks, copies) help decide which skills to add next.</p>
     <p><a id="foot-repo" href="#">Source on GitHub</a> <span aria-hidden="true">/</span> <a id="foot-owner" href="#">Made by @owner</a></p>
   </footer>
 
@@ -120,7 +132,7 @@
     </ol>
     <button type="button" class="btn btn-primary btn-wide" id="verify-btn">Check and unlock</button>
     <p class="gate-msg" id="gate-msg" role="status" aria-live="polite"></p>
-    <p class="gate-fine">We only read public GitHub data. Nothing is stored except your username, in this browser.</p>
+    <p class="gate-fine">We only read public GitHub data. Your username stays in this browser and is never sent to our stats.</p>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -136,6 +148,7 @@
 
   <script src="assets/config.js"></script>
   <script src="data/skills.js"></script>
+  <script src="assets/analytics.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>

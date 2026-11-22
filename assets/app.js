@@ -20,6 +20,7 @@
   const catLabel = Object.fromEntries(CATS.map(c => [c.id, c.label]));
 
   const $ = (s, el = document) => el.querySelector(s);
+  const track = (name, props) => { try { window.giverny && window.giverny.track(name, props); } catch {} };
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
@@ -164,7 +165,7 @@
   function renderMeta() {
     const sources = new Set(SKILLS.map(s => s.by)).size;
     const official = SKILLS.filter(s => s.official).length;
-    $("#meta").textContent = `${SKILLS.length} skills from ${sources} makers, ${official} of them official. Every install command checked against its repo.`;
+    $("#meta").textContent = `${SKILLS.length} skills from ${sources} makers, ${official} of them official. Every install command checked against its repo. More are on the way.`;
     const d = new Date(window.GIVERNY_UPDATED + "T00:00:00");
     $("#updated").textContent = d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
   }
@@ -202,6 +203,7 @@
     const title = e.target.closest(".r-title");
     if (title) {
       openId = openId === s.id ? null : s.id;
+      if (openId) track("skill_open", { skill: s.id, category: s.cat });
       render();
       const t = listEl.querySelector(`.row[data-id="${s.id}"] .r-title`);
       if (t) t.focus({ preventScroll: true });
@@ -209,13 +211,16 @@
     }
     const act = e.target.closest("[data-act], [data-copy]");
     if (!act) return;
-    if (isLocked(s)) { openGate(s); return; }
+    if (isLocked(s)) { track("locked_click", { skill: s.id }); openGate(s); return; }
     let text, msg;
     if (act.dataset.act === "prompt") { text = buildPrompt(s); msg = "Prompt copied. Paste it into Claude Code."; }
     else if (act.dataset.copy === "cmd") { text = s.cmd; msg = "Command copied."; }
     else if (act.dataset.copy === "slash") { text = pluginSlash(s.plugin); msg = "Plugin commands copied. Paste them into Claude Code."; }
     else if (act.dataset.copy === "alt") { text = s.alt; msg = "Command copied."; }
-    if (await copy(text)) { flash(act, "Copied"); toast(msg); }
+    if (await copy(text)) {
+      flash(act, "Copied"); toast(msg);
+      track(act.dataset.act === "prompt" ? "copy_prompt" : "copy_command", { skill: s.id, category: s.cat, kind: act.dataset.copy || "prompt", searched: !!qEl.value.trim() });
+    }
     else toast("Copy was blocked by the browser. Select the text and copy it manually.");
   });
 
@@ -223,6 +228,7 @@
     const chip = e.target.closest(".chip");
     if (!chip) return;
     activeCat = chip.dataset.cat;
+    track("filter", { category: activeCat });
     renderFilters(); render();
   });
   filtersEl.addEventListener("keydown", e => {
@@ -235,7 +241,15 @@
   });
 
   let qT;
-  qEl.addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(render, 80); });
+  let qTrackT;
+  qEl.addEventListener("input", () => {
+    clearTimeout(qT); qT = setTimeout(render, 80);
+    clearTimeout(qTrackT);
+    qTrackT = setTimeout(() => {
+      const q = qEl.value.trim().toLowerCase();
+      if (q.length >= 2) track("search", { query: q.slice(0, 60), results: listEl.children.length });
+    }, 1200);
+  });
   document.addEventListener("keydown", e => {
     if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName) && !$("#gate").open) {
       e.preventDefault(); qEl.focus();
@@ -244,12 +258,21 @@
   if (params.get("q")) qEl.value = params.get("q");
 
   /* ---------------- GitHub links ---------------- */
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[href^='https://github.com']");
+    if (!a) return;
+    const row = a.closest(".row");
+    const where = a.id || (row ? "skill_repo" : "link");
+    track("github_click", { target: where, skill: row ? row.dataset.id : undefined });
+  });
   const ownerUrl = `https://github.com/${OWNER}`;
   const repoHome = `https://github.com/${REPO}`;
   const submitUrl = `${repoHome}/issues/new?title=${encodeURIComponent("Add skill: ")}&body=${encodeURIComponent("Repo URL:\nInstall command:\nWhat it makes Claude do (one sentence):\n")}`;
   $("#star-btn").href = repoHome;
   $("#submit-link").href = submitUrl;
   $("#empty-submit").href = submitUrl;
+  $("#soon-submit").href = submitUrl;
+  $("#soon-star").href = repoHome;
   $("#foot-repo").href = repoHome;
   const footOwner = $("#foot-owner");
   footOwner.href = ownerUrl; footOwner.textContent = `Made by @${OWNER}`;
@@ -294,6 +317,7 @@
     $("#gate-lede").textContent = gateOn
       ? `${skill ? `“${skill.name}” is one of ${total - CFG.freePreview} skills that unlock` : `All ${total} skills unlock`} when you follow the maker and star the repo on GitHub. It’s free, and it stays unlocked in this browser.`
       : `Giverny is free while we launch. Follow the maker and star the repo on GitHub now, and every skill stays unlocked after ${freeUntil.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}.`;
+    track("gate_open", { skill: skill ? skill.id : undefined, gate_on: gateOn });
     const saved = store.get("giverny.user");
     if (saved && !userEl.value) userEl.value = saved;
     setMsg("");
@@ -336,10 +360,12 @@
       const res = await checkUser(user);
       setStatus(stFollow, res.following ? "ok" : "no", res.following ? "Following" : "Not yet");
       setStatus(stStar, res.starred ? "ok" : "no", res.starred ? "Starred" : "Not yet");
+      track("unlock_check", { following: res.following, starred: res.starred, auto: !!auto });
       if (res.following && res.starred) grant(user);
       else setMsg(!res.following && !res.starred ? "Follow and star, then come back to this tab. We check again automatically."
         : !res.following ? `Starred. Now follow @${OWNER} and come back.` : "Following. Now star the repo and come back.");
     } catch (err) {
+      track("unlock_error", { reason: err.message });
       setMsg(err.message === "nouser" ? `There’s no GitHub user called “${user}”. Check the spelling.`
         : err.message === "rate" ? "GitHub limits checks from your network to 60 an hour. Try again in a few minutes."
         : "Couldn’t reach GitHub. Check your connection and try again.", "err");
@@ -351,6 +377,7 @@
   function grant(user) {
     access = { user, at: Date.now() };
     store.set(ACCESS_KEY, access);
+    track("unlocked", { gate_on: gateOn });
     setMsg(`Unlocked. Thanks, @${user}.`, "ok");
     updateLaunchBar();
     render();

@@ -21,5 +21,18 @@ window.GIVERNY_CONFIG = {
   freePreview: 6,
 
   // Re-check a verified visitor's follow and star after this many days.
-  recheckDays: 7
+  recheckDays: 7,
+
+  // Stats. See ANALYTICS.md for the two-minute setup.
+  analytics: {
+    // Vercel Web Analytics: visits, countries, referrers, devices. Also switch it on in the Vercel dashboard.
+    vercel: true,
+    // PostHog project API key (starts with "phc_"). Unlocks click, copy, search and unlock tracking.
+    // It is a public key, safe to commit.
+    posthogKey: "",
+    // "https://us.i.posthog.com" or "https://eu.i.posthog.com", matching your PostHog region.
+    posthogHost: "https://us.i.posthog.com",
+    // Log every event to the browser console, for testing.
+    debug: false
+  }
 };
