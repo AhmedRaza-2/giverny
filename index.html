@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giverny · Design skills for Claude</title>
+  <meta name="description" content="Every design and frontend skill for Claude Code in one place. Copy one prompt, paste it into Claude, and the skill installs itself.">
+  <meta name="theme-color" content="#F3F6F3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1E20" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Giverny: design skills for Claude">
+  <meta property="og:description" content="Every UI, UX and frontend skill for Claude Code, verified and one copy away.">
+  <meta property="og:image" content="https://ahmedraza-2.github.io/giverny/og.png">
+  <meta property="og:url" content="https://ahmedraza-2.github.io/giverny/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#directory">Skip to the skills</a>
+
+  <div class="launch" id="launch" hidden>
+    <p><span id="launch-text">Free while we launch.</span> <button type="button" class="link-btn" data-open-gate>Keep access for good</button></p>
+  </div>
+
+  <header class="top">
+    <a class="brand" href="./" aria-label="Giverny home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#lily"/></svg>
+      <span>Giverny</span>
+    </a>
+    <nav class="top-nav" aria-label="Site">
+      <a href="#how">How it works</a>
+      <a id="submit-link" href="#">Add a skill</a>
+      <a class="star-btn" id="star-btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .9l2.2 4.5 4.9.7-3.6 3.5.9 4.9L8 12.2l-4.4 2.3.9-4.9L.9 6.1l4.9-.7z"/></svg>
+        <span>Star</span><span class="star-count" id="star-count" hidden></span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Give Claude taste.</h1>
+        <p class="lede">Every design and frontend skill for Claude Code, checked and in one place. Copy a prompt, paste it into Claude, and the skill installs itself.</p>
+        <div class="search">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4.5 4.5"/></svg>
+          <label class="sr" for="q">Search skills</label>
+          <input id="q" type="search" placeholder="Search animation, accessibility, Figma…" autocomplete="off" spellcheck="false">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
+        <p class="meta" id="meta"></p>
+      </div>
+      <canvas class="pond" id="pond" aria-hidden="true"></canvas>
+    </section>
+
+    <section class="directory" id="directory" aria-label="Skills">
+      <div class="filters" role="tablist" aria-label="Categories" id="filters"></div>
+      <ol class="list" id="list"></ol>
+      <div class="empty" id="empty" hidden>
+        <p>No skill matches “<span id="empty-q"></span>”.</p>
+        <p>Try a broader word, or <a id="empty-submit" href="#">suggest a skill</a> we’re missing.</p>
+      </div>
+    </section>
+
+    <section class="how" id="how" aria-labelledby="how-title">
+      <h2 id="how-title">From this page to a skill Claude uses, in under a minute</h2>
+      <ol class="steps">
+        <li>
+          <h3>Copy the prompt</h3>
+          <p>Each skill has a ready prompt with the exact install command from its author’s repo.</p>
+        </li>
+        <li>
+          <h3>Paste it into Claude Code</h3>
+          <p>Claude runs the command, checks the skill loaded, and falls back to a manual install if needed.</p>
+        </li>
+        <li>
+          <h3>Ask for the work</h3>
+          <p>Skills load on their own when your request matches. Each prompt ends with an example to try.</p>
+        </li>
+      </ol>
+      <p class="how-note">Prefer the terminal? Open any skill to see the raw command and the Claude Code plugin route.</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Giverny is named for the garden where the other Claude, Claude Monet, painted his water lilies.</p>
+    <p>An independent, open-source index. Not affiliated with Anthropic. Every skill belongs to its author; check each repo’s license before use. Index checked <span id="updated"></span>.</p>
+    <p><a id="foot-repo" href="#">Source on GitHub</a> <span aria-hidden="true">/</span> <a id="foot-owner" href="#">Made by @owner</a></p>
+  </footer>
+
+  <dialog class="gate" id="gate" aria-labelledby="gate-title">
+    <form method="dialog" class="gate-close-form"><button class="icon-btn" aria-label="Close" value="close">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button></form>
+    <svg class="gate-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#lily"/></svg>
+    <h2 id="gate-title">Unlock every skill</h2>
+    <p class="gate-lede" id="gate-lede">Giverny stays free. Follow the maker and star the repo on GitHub, and every copy button opens for good.</p>
+    <ol class="gate-steps">
+      <li>
+        <label for="gh-user">Your GitHub username</label>
+        <div class="gate-row">
+          <input id="gh-user" type="text" inputmode="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="octocat">
+        </div>
+      </li>
+      <li>
+        <div class="gate-row">
+          <a class="btn" id="follow-btn" href="#" target="_blank" rel="noopener">Follow @owner</a>
+          <span class="status" id="st-follow" data-state="idle">Not checked</span>
+        </div>
+      </li>
+      <li>
+        <div class="gate-row">
+          <a class="btn" id="starrepo-btn" href="#" target="_blank" rel="noopener">Star the repo</a>
+          <span class="status" id="st-star" data-state="idle">Not checked</span>
+        </div>
+      </li>
+    </ol>
+    <button type="button" class="btn btn-primary btn-wide" id="verify-btn">Check and unlock</button>
+    <p class="gate-msg" id="gate-msg" role="status" aria-live="polite"></p>
+    <p class="gate-fine">We only read public GitHub data. Nothing is stored except your username, in this browser.</p>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="lily" viewBox="0 0 32 32">
+      <ellipse cx="16" cy="22" rx="14" ry="6.5" fill="var(--pad)"/>
+      <path d="M16 22 L28 19 A14 6.5 0 0 1 30 22 Z" fill="var(--paper)"/>
+      <path d="M16 21c-4-2-6-6-5.5-10 2.5 1 4.6 3.4 5.5 6 .9-2.6 3-5 5.5-6 .5 4-1.5 8-5.5 10z" fill="var(--lily)"/>
+      <path d="M16 21c-1.6-3-1.6-8 0-12 1.6 4 1.6 9 0 12z" fill="var(--lily-deep)"/>
+    </symbol>
+  </svg>
+
+  <script src="assets/config.js"></script>
+  <script src="data/skills.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
