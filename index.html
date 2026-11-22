@@ -25,7 +25,7 @@
   <a class="skip" href="#directory">Skip to the skills</a>
 
   <div class="launch" id="launch" hidden>
-    <p><span id="launch-text">Free while we launch.</span> <button type="button" class="link-btn" data-open-gate>Keep access for good</button></p>
+    <p><span id="launch-text">Sign in with GitHub, follow and star to copy any skill.</span> <button type="button" class="link-btn" data-open-gate>Unlock</button></p>
   </div>
 
   <header class="top">
@@ -36,6 +36,7 @@
     <nav class="top-nav" aria-label="Site">
       <a href="#how">How it works</a>
       <a id="submit-link" href="#">Add a skill</a>
+      <span class="me" id="me" hidden><span id="me-login"></span> <a href="/api/auth/logout" id="signout">Sign out</a></span>
       <a class="star-btn" id="star-btn" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .9l2.2 4.5 4.9.7-3.6 3.5.9 4.9L8 12.2l-4.4 2.3.9-4.9L.9 6.1l4.9-.7z"/></svg>
         <span>Star</span><span class="star-count" id="star-count" hidden></span>
@@ -109,12 +110,12 @@
       <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button></form>
     <svg class="gate-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#lily"/></svg>
     <h2 id="gate-title">Unlock every skill</h2>
-    <p class="gate-lede" id="gate-lede">Giverny stays free. Follow the maker and star the repo on GitHub, and every copy button opens for good.</p>
+    <p class="gate-lede" id="gate-lede">Every skill is free to copy once you sign in with GitHub, follow the maker and star the repo. We check all three each time you copy.</p>
     <ol class="gate-steps">
       <li>
-        <label for="gh-user">Your GitHub username</label>
         <div class="gate-row">
-          <input id="gh-user" type="text" inputmode="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="octocat">
+          <a class="btn" id="signin-btn" href="/api/auth/login">Sign in with GitHub</a>
+          <span class="status" id="st-signin" data-state="idle">Not signed in</span>
         </div>
       </li>
       <li>
@@ -130,9 +131,18 @@
         </div>
       </li>
     </ol>
-    <button type="button" class="btn btn-primary btn-wide" id="verify-btn">Check and unlock</button>
+    <button type="button" class="btn btn-primary btn-wide" id="verify-btn">Check again</button>
     <p class="gate-msg" id="gate-msg" role="status" aria-live="polite"></p>
-    <p class="gate-fine">We only read public GitHub data. Your username stays in this browser and is never sent to our stats.</p>
+    <p class="gate-fine">Sign-in asks GitHub only for your public profile. No repo access, no emails. Your username is never sent to our stats.</p>
+  </dialog>
+
+  <dialog class="gate manual" id="manual" aria-labelledby="manual-title">
+    <form method="dialog" class="gate-close-form"><button class="icon-btn" aria-label="Close" value="close">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button></form>
+    <h2 id="manual-title">Your prompt is ready</h2>
+    <p class="gate-lede">Your browser blocked the automatic copy. Press the button below, or select the text and copy it.</p>
+    <textarea id="manual-text" readonly rows="9"></textarea>
+    <button type="button" class="btn btn-primary btn-wide" id="manual-copy">Copy</button>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

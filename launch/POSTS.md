@@ -36,7 +36,7 @@ Attach `giverny-carousel-linkedin.pdf` as a document. Title it: **Give Claude ta
 > 2. Click "Copy prompt"
 > 3. Paste it into Claude Code. It installs the skill and shows you how to use it.
 >
-> 54 skills. Free. Every install command checked against its repo. Many more coming very soon.
+> 54 skills. Free: sign in with GitHub and star the repo to unlock. Many more coming very soon.
 >
 > Link in the first comment.
 >
@@ -84,7 +84,7 @@ Optional second story: a 10-second screen recording of you clicking "Copy prompt
 
 - **"What's a skill?"** A folder with instructions Claude Code reads when your request matches, like a specialist it can call in. You install it once and it works in every project.
 - **"Does it work with Cursor / Codex?"** Most use the open Agent Skills format, so `npx skills add` installs them for Cursor, Codex and others too. The copy button is tuned for Claude Code.
-- **"Is it free?"** Yes. Every skill belongs to its author and is open source. Giverny just puts them in one place with the right install command.
+- **"Is it free?"** Yes. Sign in with GitHub, follow and star the repo, and every skill unlocks. Each skill belongs to its author and is open source.
 - **"You missed X"** Send me the link. It'll be in the next update.
 
 ## Next 7 days

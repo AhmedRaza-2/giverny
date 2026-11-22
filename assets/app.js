@@ -5,7 +5,6 @@
   const SKILLS = window.GIVERNY_SKILLS || [];
   const OWNER = CFG.owner;
   const REPO = CFG.repo;
-  const ACCESS_KEY = "giverny.access.v1";
   const OFFICIAL_DIR = "anthropics/claude-plugins-official";
 
   const CATS = [
@@ -22,60 +21,50 @@
   const $ = (s, el = document) => el.querySelector(s);
   const track = (name, props) => { try { window.giverny && window.giverny.track(name, props); } catch {} };
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const store = {
-    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
-    del(k) { try { localStorage.removeItem(k); } catch {} }
-  };
-
-  /* ---------------- access state ---------------- */
   const params = new URLSearchParams(location.search);
-  const today = new Date();
-  const freeUntil = new Date(CFG.freeUntil + "T00:00:00");
-  const gateOn = params.get("gate") === "preview" || today >= freeUntil;
-  let access = store.get(ACCESS_KEY);
-  const unlocked = () => !!(access && access.user);
-  // Curated order = file order. The first N stay free while the gate is on.
   SKILLS.forEach((s, i) => { s.rank = i; });
-  const isLocked = s => gateOn && !unlocked() && s.rank >= CFG.freePreview;
+
+  /* ---------------- access (decided by the server only) ---------------- */
+  // Nothing in this file can unlock a skill. Prompts and commands only come from /api/reveal,
+  // which checks the GitHub sign-in, star and follow on every request.
+  const auth = { loaded: false, configured: true, signedIn: false, login: null, following: false, starred: false, unlocked: false, requireFollow: true, error: null };
+  const isLocked = () => !auth.unlocked;
+  const shown = new Map(); // commands already revealed, for display in open rows only
+
+  async function api(path) {
+    let r;
+    try { r = await fetch(path, { cache: "no-store", credentials: "same-origin", headers: { Accept: "application/json" } }); }
+    catch { const e = new Error("network"); e.status = 0; throw e; }
+    let body = null;
+    try { body = await r.json(); } catch {}
+    if (!r.ok) {
+      const e = new Error((body && body.error) || (r.status === 404 ? "no_api" : "error"));
+      e.status = r.status; e.body = body; throw e;
+    }
+    return body;
+  }
+
+  function applyAuth(b) {
+    const was = auth.unlocked;
+    if (b && typeof b.signedIn === "boolean") {
+      for (const k of ["configured", "signedIn", "login", "following", "starred", "unlocked", "requireFollow"]) if (k in b) auth[k] = b[k];
+    }
+    auth.loaded = true;
+    if (!auth.unlocked) shown.clear();
+    if (!was && auth.unlocked) track("unlocked", {});
+    updateChrome();
+    if (was !== auth.unlocked) render();
+  }
+
+  async function refreshStatus() {
+    try { auth.error = null; applyAuth(await api("/api/status")); }
+    catch (e) { auth.error = e.message; applyAuth(e.body); }
+    return auth;
+  }
 
   /* ---------------- formatting ---------------- */
   const fmtStars = n => n >= 1000 ? (n >= 100000 ? Math.round(n / 1000) : (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "")) + "k" : String(n);
   const repoUrl = s => `https://github.com/${s.repo}${s.path ? "/tree/main/" + s.path : ""}`;
-  const pluginCli = p => (p.add ? `claude plugin marketplace add ${p.add} && ` : "") + `claude plugin install ${p.install}`;
-  const pluginSlash = p => (p.add ? `/plugin marketplace add ${p.add}\n` : "") + `/plugin install ${p.install}`;
-  const nonInteractive = cmd => /npx (-y )?skills(@latest)? add/.test(cmd) && !/\s-y(\s|$)/.test(cmd) ? cmd + " -a claude-code -y" : cmd;
-
-  function buildPrompt(s) {
-    const site = CFG.siteUrl || (location.protocol.startsWith("http") ? location.origin + location.pathname : "");
-    if (s.kind === "file") {
-      return [
-        `Add a DESIGN.md design system to my project from ${repoUrl(s)}.`,
-        ``,
-        `1. List the folders in https://github.com/${s.repo}/tree/main/design-md and ask me which product's style I want. If I don't say, use linear.app.`,
-        `2. Download that folder's DESIGN.md into my project root, for example:`,
-        `   ${s.cmd}`,
-        `3. Read it, summarise the palette, type and spacing rules in a few lines, then follow it for all UI work in this project. Example: "${s.ask}"`,
-        ``,
-        `Found on Giverny: ${site}`
-      ].join("\n");
-    }
-    const lines = [
-      `Install "${s.name}" for Claude Code from ${repoUrl(s)}.`,
-      ``,
-      `1. Run this in my terminal:`,
-      `   ${nonInteractive(s.cmd)}`
-    ];
-    if (s.plugin && !s.cmd.startsWith("claude plugin")) lines.push(`   If that fails, install it as a Claude Code plugin: ${pluginCli(s.plugin)}`);
-    if (s.alt) lines.push(`   Fallback: ${s.alt}`);
-    lines.push(
-      `2. If none of that works, clone the repo and copy the folder that contains SKILL.md into ~/.claude/skills/.`,
-      `3. Confirm it installed (a plugin may need a Claude Code restart), then show me how to use it. Example: "${s.ask}"`,
-      ``,
-      `Found on Giverny: ${site}`
-    );
-    return lines.join("\n");
-  }
 
   /* ---------------- rendering ---------------- */
   const listEl = $("#list");
@@ -114,13 +103,36 @@
     return total;
   }
 
-  function cmdBlock(text, label, locked, kind) {
-    return `<div class="cmd"><code class="${locked ? "blur" : ""}" ${locked ? 'aria-hidden="true"' : ""}>${esc(text)}</code>` +
-      `<button type="button" data-copy="${kind}" aria-label="${locked ? "Unlock to copy" : "Copy " + esc(label)}">${locked ? "Unlock" : "Copy"}</button></div>`;
+  function cmdBlock(text, label, kind, state) {
+    const locked = state === "locked";
+    const cls = locked ? "blur" : state === "loading" ? "loading" : "";
+    return `<div class="cmd"><code class="${cls}" ${locked ? 'aria-hidden="true"' : ""}>${esc(text)}</code>` +
+      (state === "loading" ? "" : `<button type="button" data-copy="${kind}" aria-label="${locked ? "Unlock to copy" : "Copy " + esc(label)}">${locked ? "Unlock" : "Copy"}</button>`) + `</div>`;
+  }
+
+  function detailHtml(s) {
+    const blocks = [];
+    const title = s.kind === "file" ? "Download command" : "Install command";
+    const r = shown.get(s.id);
+    if (isLocked()) {
+      blocks.push(`<div><h4>${title}</h4>${cmdBlock("npx skills add ••••••••/••••••••••", "command", "cmd", "locked")}</div>`);
+      blocks.push(`<p class="d-ask">Sign in with GitHub, follow and star to see and copy the install commands.</p>`);
+    } else if (r && r.error) {
+      blocks.push(`<p class="d-ask">Couldn’t check your GitHub access just now. Close this row and open it again to retry.</p>`);
+    } else if (!r) {
+      blocks.push(`<div><h4>${title}</h4>${cmdBlock("Checking your GitHub access…", "command", "cmd", "loading")}</div>`);
+    } else {
+      blocks.push(`<div><h4>${title}</h4>${cmdBlock(r.cmd, "command", "cmd")}</div>`);
+      if (r.slash) blocks.push(`<div><h4>Or inside Claude Code</h4>${cmdBlock(r.slash, "plugin commands", "slash")}</div>`);
+      if (r.alt) blocks.push(`<div><h4>Alternative</h4>${cmdBlock(r.alt, "alternative command", "alt")}</div>`);
+      blocks.push(`<p class="d-ask">Then try: <q>${esc(r.ask)}</q></p>`);
+    }
+    blocks.push(`<p class="d-links"><a href="${repoUrl(s)}" target="_blank" rel="noopener">View on GitHub</a></p>`);
+    return `<div class="row-detail" id="d-${s.id}">${blocks.join("")}</div>`;
   }
 
   function rowHtml(s) {
-    const locked = isLocked(s);
+    const locked = isLocked();
     const open = openId === s.id;
     const stars = s.repo === OFFICIAL_DIR
       ? `<span class="r-stars dir" title="Listed in Anthropic's official plugin directory">Official directory</span>`
@@ -128,15 +140,6 @@
     const primary = locked
       ? `<button type="button" class="btn locked" data-act="prompt">${icon.lock}<span>Unlock<span class="label-long"> to copy</span></span></button>`
       : `<button type="button" class="btn" data-act="prompt">${icon.copy}<span>Copy<span class="label-long"> prompt</span></span></button>`;
-    let detail = "";
-    if (open) {
-      const blocks = [`<div><h4>${s.kind === "file" ? "Download command" : "Install command"}</h4>${cmdBlock(s.cmd, "command", locked, "cmd")}</div>`];
-      if (s.plugin && !s.cmd.startsWith("claude plugin")) blocks.push(`<div><h4>Or inside Claude Code</h4>${cmdBlock(pluginSlash(s.plugin), "plugin commands", locked, "slash")}</div>`);
-      if (s.alt) blocks.push(`<div><h4>Alternative</h4>${cmdBlock(s.alt, "alternative command", locked, "alt")}</div>`);
-      blocks.push(`<p class="d-ask">Then try: <q>${esc(s.ask)}</q></p>`);
-      blocks.push(`<p class="d-links"><a href="${repoUrl(s)}" target="_blank" rel="noopener">View on GitHub</a></p>`);
-      detail = `<div class="row-detail" id="d-${s.id}">${blocks.join("")}</div>`;
-    }
     return `<li class="row" data-id="${s.id}" style="--c: var(--c-${s.cat})">
       <div class="row-head">
         <div class="r-name">
@@ -146,7 +149,7 @@
         <p class="r-desc">${esc(s.desc)}</p>
         ${stars}
         <div class="r-act">${primary}</div>
-      </div>${detail}
+      </div>${open ? detailHtml(s) : ""}
     </li>`;
   }
 
@@ -160,6 +163,25 @@
     listEl.innerHTML = items.map(rowHtml).join("");
     $("#empty").hidden = items.length > 0;
     $("#empty-q").textContent = qEl.value.trim();
+    if (openId && !isLocked() && !shown.has(openId)) loadDetail(openId);
+    if (!openId) for (const [k, v] of shown) if (v.error) shown.delete(k);
+  }
+
+  let loadingId = null;
+  async function loadDetail(id) {
+    if (loadingId === id) return;
+    loadingId = id;
+    try {
+      const r = await api(`/api/reveal?id=${encodeURIComponent(id)}`);
+      shown.set(id, r);
+      applyAuth(r);
+    } catch (e) {
+      if (e.message !== "signin" && e.message !== "locked") shown.set(id, { error: true });
+      denied(e, SKILLS.find(s => s.id === id), true);
+    } finally {
+      loadingId = null;
+      if (openId === id) render();
+    }
   }
 
   function renderMeta() {
@@ -170,16 +192,16 @@
     $("#updated").textContent = d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
   }
 
-  /* ---------------- copy ---------------- */
+  /* ---------------- copy (always asks the server first) ---------------- */
   const toastEl = $("#toast");
   let toastT;
   function toast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     clearTimeout(toastT);
-    toastT = setTimeout(() => toastEl.classList.remove("show"), 2600);
+    toastT = setTimeout(() => toastEl.classList.remove("show"), 3000);
   }
-  async function copy(text) {
+  async function writeText(text) {
     try { await navigator.clipboard.writeText(text); return true; }
     catch {
       const ta = document.createElement("textarea");
@@ -196,7 +218,64 @@
     setTimeout(() => { btn.classList.remove("done"); btn.innerHTML = prev; }, 1800);
   }
 
-  listEl.addEventListener("click", async e => {
+  const manual = $("#manual");
+  function showManual(text) {
+    $("#manual-text").value = text;
+    manual.showModal();
+    $("#manual-text").select();
+  }
+  $("#manual-copy").addEventListener("click", async () => {
+    if (await writeText($("#manual-text").value)) { toast("Copied. Paste it into Claude Code."); manual.close(); }
+    else $("#manual-text").select();
+  });
+
+  function denied(e, skill, quiet) {
+    const code = e && e.message;
+    if (code === "signin" || code === "locked") {
+      applyAuth(e.body);
+      if (!quiet || openId) openGate(skill);
+      return;
+    }
+    if (quiet) return;
+    toast(code === "not_configured" ? "GitHub sign-in isn’t set up on this site yet."
+      : code === "no_api" ? "Copying works on the live site, giverny-two.vercel.app."
+      : code === "rate" ? "GitHub is rate-limiting checks right now. Try again in a minute."
+      : "Couldn’t check your GitHub access. Try again in a moment.");
+  }
+
+  const copyLabels = { prompt: "Prompt copied. Paste it into Claude Code.", cmd: "Command copied.", slash: "Plugin commands copied. Paste them into Claude Code.", alt: "Command copied." };
+
+  async function copyFromServer(s, kind, btn) {
+    btn.setAttribute("aria-busy", "true");
+    const req = api(`/api/reveal?id=${encodeURIComponent(s.id)}`).then(r => {
+      const text = r[kind];
+      if (!text) throw Object.assign(new Error("error"), { status: 500 });
+      return r;
+    });
+    req.catch(() => {}); // handled below
+    // Write to the clipboard inside the click, with the text arriving from the server (needed by Safari).
+    let copied = false;
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      try {
+        const item = new ClipboardItem({ "text/plain": req.then(r => new Blob([r[kind]], { type: "text/plain" })) });
+        await navigator.clipboard.write([item]);
+        copied = true;
+      } catch { /* fall back below */ }
+    }
+    let r;
+    try { r = await req; }
+    catch (e) { btn.removeAttribute("aria-busy"); denied(e, s); return; }
+    btn.removeAttribute("aria-busy");
+    applyAuth(r);
+    shown.set(s.id, r);
+    if (!copied) copied = await writeText(r[kind]);
+    if (!copied) { showManual(r[kind]); return; }
+    flash(btn, "Copied");
+    toast(copyLabels[kind]);
+    track(kind === "prompt" ? "copy_prompt" : "copy_command", { skill: s.id, category: s.cat, kind, searched: !!qEl.value.trim() });
+  }
+
+  listEl.addEventListener("click", e => {
     const row = e.target.closest(".row");
     if (!row) return;
     const s = SKILLS.find(x => x.id === row.dataset.id);
@@ -210,18 +289,9 @@
       return;
     }
     const act = e.target.closest("[data-act], [data-copy]");
-    if (!act) return;
-    if (isLocked(s)) { track("locked_click", { skill: s.id }); openGate(s); return; }
-    let text, msg;
-    if (act.dataset.act === "prompt") { text = buildPrompt(s); msg = "Prompt copied. Paste it into Claude Code."; }
-    else if (act.dataset.copy === "cmd") { text = s.cmd; msg = "Command copied."; }
-    else if (act.dataset.copy === "slash") { text = pluginSlash(s.plugin); msg = "Plugin commands copied. Paste them into Claude Code."; }
-    else if (act.dataset.copy === "alt") { text = s.alt; msg = "Command copied."; }
-    if (await copy(text)) {
-      flash(act, "Copied"); toast(msg);
-      track(act.dataset.act === "prompt" ? "copy_prompt" : "copy_command", { skill: s.id, category: s.cat, kind: act.dataset.copy || "prompt", searched: !!qEl.value.trim() });
-    }
-    else toast("Copy was blocked by the browser. Select the text and copy it manually.");
+    if (!act || act.getAttribute("aria-busy")) return;
+    if (isLocked()) { track("locked_click", { skill: s.id }); openGate(s); return; }
+    copyFromServer(s, act.dataset.act === "prompt" ? "prompt" : act.dataset.copy, act);
   });
 
   filtersEl.addEventListener("click", e => {
@@ -237,11 +307,10 @@
     const i = chips.indexOf(document.activeElement);
     if (i < 0) return;
     const next = chips[(i + (e.key === "ArrowRight" ? 1 : chips.length - 1)) % chips.length];
-    next.focus(); next.click(); filtersEl.querySelector(`[data-cat="${next.dataset.cat}"]`).focus();
+    next.click(); filtersEl.querySelector(`[data-cat="${next.dataset.cat}"]`).focus();
   });
 
-  let qT;
-  let qTrackT;
+  let qT, qTrackT;
   qEl.addEventListener("input", () => {
     clearTimeout(qT); qT = setTimeout(render, 80);
     clearTimeout(qTrackT);
@@ -251,7 +320,7 @@
     }, 1200);
   });
   document.addEventListener("keydown", e => {
-    if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName) && !$("#gate").open) {
+    if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName) && !$("#gate").open && !manual.open) {
       e.preventDefault(); qEl.focus();
     }
   });
@@ -259,11 +328,11 @@
 
   /* ---------------- GitHub links ---------------- */
   document.addEventListener("click", e => {
-    const a = e.target.closest("a[href^='https://github.com']");
+    const a = e.target.closest("a[href^='https://github.com'], a[href^='/api/auth/login']");
     if (!a) return;
     const row = a.closest(".row");
-    const where = a.id || (row ? "skill_repo" : "link");
-    track("github_click", { target: where, skill: row ? row.dataset.id : undefined });
+    if (a.id === "signin-btn") return track("signin_click", {});
+    track("github_click", { target: a.id || (row ? "skill_repo" : "link"), skill: row ? row.dataset.id : undefined });
   });
   const ownerUrl = `https://github.com/${OWNER}`;
   const repoHome = `https://github.com/${REPO}`;
@@ -278,6 +347,7 @@
   footOwner.href = ownerUrl; footOwner.textContent = `Made by @${OWNER}`;
   $("#follow-btn").href = ownerUrl; $("#follow-btn").textContent = `Follow @${OWNER}`;
   $("#starrepo-btn").href = repoHome; $("#starrepo-btn").textContent = `Star ${REPO.split("/")[1]}`;
+  $("#signin-btn").href = `/api/auth/login?return=${encodeURIComponent(location.pathname)}`;
 
   (async function starCount() {
     const KEY = "giverny.stars";
@@ -298,124 +368,85 @@
 
   /* ---------------- gate ---------------- */
   const gate = $("#gate");
-  const userEl = $("#gh-user");
   const msgEl = $("#gate-msg");
-  const stFollow = $("#st-follow");
-  const stStar = $("#st-star");
   const verifyBtn = $("#verify-btn");
-  let checking = false;
   let lastAuto = 0;
 
-  function setStatus(el, state, text) {
+  function setStatus(id, state, text) {
+    const el = $(id);
     el.dataset.state = state; el.textContent = text;
     el.closest("li").classList.toggle("ok", state === "ok");
   }
   function setMsg(text, kind) { msgEl.textContent = text; msgEl.className = "gate-msg" + (kind ? " " + kind : ""); }
 
+  function paintGate() {
+    const si = $("#signin-btn");
+    if (auth.signedIn) {
+      setStatus("#st-signin", "ok", `@${auth.login}`);
+      si.textContent = "Signed in with GitHub"; si.setAttribute("aria-disabled", "true"); si.style.pointerEvents = "none";
+      setStatus("#st-follow", auth.following ? "ok" : "no", auth.following ? "Following" : "Not yet");
+      setStatus("#st-star", auth.starred ? "ok" : "no", auth.starred ? "Starred" : "Not yet");
+    } else {
+      setStatus("#st-signin", "idle", "Not signed in");
+      si.textContent = "Sign in with GitHub"; si.removeAttribute("aria-disabled"); si.style.pointerEvents = "";
+      setStatus("#st-follow", "idle", "After sign-in");
+      setStatus("#st-star", "idle", "After sign-in");
+    }
+    $("#follow-btn").closest("li").hidden = !auth.requireFollow;
+  }
+
+  function gateMessage() {
+    if (!auth.configured) return setMsg("GitHub sign-in isn’t set up on this site yet.", "err");
+    if (auth.error === "no_api") return setMsg("Unlocking works on the live site, giverny-two.vercel.app.", "err");
+    if (auth.error && auth.error !== "signin") return setMsg("Couldn’t reach GitHub to check. Try again in a moment.", "err");
+    if (!auth.signedIn) return setMsg("Start by signing in with GitHub. You’ll come straight back here.");
+    if (auth.unlocked) return setMsg(`Unlocked. Thanks, @${auth.login}.`, "ok");
+    if (!auth.starred && !auth.following && auth.requireFollow) return setMsg("Now follow and star, then come back to this tab. We check again automatically.");
+    if (!auth.starred) return setMsg("Now star the repo and come back to this tab.");
+    return setMsg(`Starred. Now follow @${OWNER} and come back to this tab.`);
+  }
+
   function openGate(skill) {
     const total = SKILLS.length;
-    $("#gate-lede").textContent = gateOn
-      ? `${skill ? `“${skill.name}” is one of ${total - CFG.freePreview} skills that unlock` : `All ${total} skills unlock`} when you follow the maker and star the repo on GitHub. It’s free, and it stays unlocked in this browser.`
-      : `Giverny is free while we launch. Follow the maker and star the repo on GitHub now, and every skill stays unlocked after ${freeUntil.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}.`;
-    track("gate_open", { skill: skill ? skill.id : undefined, gate_on: gateOn });
-    const saved = store.get("giverny.user");
-    if (saved && !userEl.value) userEl.value = saved;
-    setMsg("");
-    if (typeof gate.showModal === "function") gate.showModal(); else gate.setAttribute("open", "");
-    (userEl.value ? $("#follow-btn") : userEl).focus();
+    $("#gate-lede").textContent = `${skill ? `To copy “${skill.name}” and all ${total} skills,` : `To copy all ${total} skills,`} sign in with GitHub, ${auth.requireFollow ? `follow @${OWNER} and ` : ""}star the repo. It’s free. We check this every time you copy.`;
+    track("gate_open", { skill: skill ? skill.id : undefined, signed_in: auth.signedIn });
+    paintGate(); gateMessage();
+    if (!gate.open) { if (typeof gate.showModal === "function") gate.showModal(); else gate.setAttribute("open", ""); }
+    (auth.signedIn ? (auth.following || !auth.requireFollow ? $("#starrepo-btn") : $("#follow-btn")) : $("#signin-btn")).focus();
   }
   document.querySelectorAll("[data-open-gate]").forEach(b => b.addEventListener("click", () => openGate()));
 
-  async function gh(path) {
-    const sep = path.includes("?") ? "&" : "?";
-    const r = await fetch(`https://api.github.com${path}${sep}_=${Date.now()}`, { cache: "no-store", headers: { Accept: "application/vnd.github+json" } });
-    if ((r.status === 403 || r.status === 429) && r.headers.get("x-ratelimit-remaining") === "0") throw new Error("rate");
-    return r;
-  }
-  async function checkUser(user) {
-    // Starred list is newest-first, so a fresh star is on page 1.
-    let starred = false;
-    for (let page = 1; page <= 3 && !starred; page++) {
-      const r = await gh(`/users/${encodeURIComponent(user)}/starred?per_page=100&page=${page}`);
-      if (r.status === 404) throw new Error("nouser");
-      if (!r.ok) throw new Error("net");
-      const list = await r.json();
-      starred = list.some(x => x.full_name && x.full_name.toLowerCase() === REPO.toLowerCase());
-      if (list.length < 100) break;
-    }
-    const f = await gh(`/users/${encodeURIComponent(user)}/following/${OWNER}`);
-    if (f.status !== 204 && f.status !== 404) throw new Error("net");
-    return { following: f.status === 204, starred };
-  }
-
-  async function verify(auto) {
-    const user = userEl.value.trim().replace(/^@/, "").replace(/^https?:\/\/github\.com\//i, "").replace(/\/.*$/, "");
-    if (!user) { if (!auto) { setMsg("Enter your GitHub username first.", "err"); userEl.focus(); } return; }
-    if (!/^[a-z\d](?:[a-z\d-]{0,38})$/i.test(user)) { setMsg("That doesn’t look like a GitHub username. Use letters, numbers and dashes.", "err"); return; }
-    if (checking) return;
-    checking = true;
+  async function checkNow(auto) {
     verifyBtn.disabled = true; verifyBtn.textContent = "Checking GitHub…";
-    store.set("giverny.user", user);
-    try {
-      const res = await checkUser(user);
-      setStatus(stFollow, res.following ? "ok" : "no", res.following ? "Following" : "Not yet");
-      setStatus(stStar, res.starred ? "ok" : "no", res.starred ? "Starred" : "Not yet");
-      track("unlock_check", { following: res.following, starred: res.starred, auto: !!auto });
-      if (res.following && res.starred) grant(user);
-      else setMsg(!res.following && !res.starred ? "Follow and star, then come back to this tab. We check again automatically."
-        : !res.following ? `Starred. Now follow @${OWNER} and come back.` : "Following. Now star the repo and come back.");
-    } catch (err) {
-      track("unlock_error", { reason: err.message });
-      setMsg(err.message === "nouser" ? `There’s no GitHub user called “${user}”. Check the spelling.`
-        : err.message === "rate" ? "GitHub limits checks from your network to 60 an hour. Try again in a few minutes."
-        : "Couldn’t reach GitHub. Check your connection and try again.", "err");
-    } finally {
-      checking = false; verifyBtn.disabled = false; verifyBtn.textContent = "Check and unlock";
-    }
+    await refreshStatus();
+    verifyBtn.disabled = false; verifyBtn.textContent = "Check again";
+    paintGate(); gateMessage();
+    track("unlock_check", { following: auth.following, starred: auth.starred, auto: !!auto });
+    if (auth.unlocked) setTimeout(() => { if (gate.open) gate.close(); toast("Every skill is unlocked."); }, 900);
   }
-
-  function grant(user) {
-    access = { user, at: Date.now() };
-    store.set(ACCESS_KEY, access);
-    track("unlocked", { gate_on: gateOn });
-    setMsg(`Unlocked. Thanks, @${user}.`, "ok");
-    updateLaunchBar();
-    render();
-    setTimeout(() => { if (gate.open) gate.close(); toast("Every skill is unlocked."); }, 900);
-  }
-
-  verifyBtn.addEventListener("click", () => verify(false));
-  userEl.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); verify(false); } });
-  // When someone returns from the GitHub tab, check again without being asked.
+  verifyBtn.addEventListener("click", () => checkNow(false));
+  // Coming back from the GitHub tab re-checks without a click.
   window.addEventListener("focus", () => {
-    if (!gate.open || !userEl.value.trim() || unlocked()) return;
-    if (Date.now() - lastAuto < 5000) return;
+    if (!gate.open || !auth.signedIn || auth.unlocked) return;
+    if (Date.now() - lastAuto < 4000) return;
     lastAuto = Date.now();
-    setTimeout(() => verify(true), 700);
+    setTimeout(() => checkNow(true), 600);
   });
 
-  async function recheck() {
-    if (!unlocked()) return;
-    if (Date.now() - access.at < CFG.recheckDays * 864e5) return;
-    try {
-      const res = await checkUser(access.user);
-      if (res.following && res.starred) { access.at = Date.now(); store.set(ACCESS_KEY, access); }
-      else if (gateOn) {
-        store.del(ACCESS_KEY); access = null; updateLaunchBar(); render();
-        toast("Access paused: the follow or star was removed. Follow and star again to unlock.");
-      }
-    } catch { /* network or rate limit: keep access */ }
-  }
-
-  function updateLaunchBar() {
+  function updateChrome() {
     const bar = $("#launch");
-    if (unlocked()) { bar.hidden = true; return; }
-    const date = freeUntil.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
-    $("#launch-text").textContent = gateOn
-      ? `${CFG.freePreview} skills are free to copy. Follow and star on GitHub to unlock all ${SKILLS.length}.`
-      : `Everything is free while we launch, until ${date}.`;
-    bar.querySelector("[data-open-gate]").textContent = gateOn ? "Unlock all" : "Keep access for good";
-    bar.hidden = false;
+    const me = $("#me");
+    me.hidden = !auth.signedIn;
+    $("#me-login").textContent = auth.signedIn ? `@${auth.login}` : "";
+    if (auth.unlocked || !auth.loaded) { bar.hidden = true; }
+    else {
+      $("#launch-text").textContent = auth.signedIn
+        ? `Signed in as @${auth.login}. ${auth.requireFollow ? "Follow and star" : "Star the repo"} on GitHub to finish unlocking.`
+        : `Sign in with GitHub, ${auth.requireFollow ? "follow and star" : "star the repo"} to copy any of the ${SKILLS.length} skills.`;
+      bar.querySelector("[data-open-gate]").textContent = auth.signedIn ? "Finish unlocking" : "Unlock";
+      bar.hidden = false;
+    }
+    if (gate.open) { paintGate(); gateMessage(); }
   }
 
   /* ---------------- the pond ---------------- */
@@ -438,7 +469,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const W = rect.width, H = rect.height, S = Math.max(W, H * 1.25) / 520;
     const r = rng(1840);
-    const C = { water: css("--water"), wis: css("--wisteria"), pad: css("--pad"), bridge: css("--bridge"), lily: css("--lily"), deep: css("--lily-deep"), line: css("--line"), paper: css("--paper") };
+    const C = { water: css("--water"), wis: css("--wisteria"), pad: css("--pad"), bridge: css("--bridge"), lily: css("--lily"), deep: css("--lily-deep"), line: css("--line") };
     const dabs = [];
     // Reflections of sky and willow: short horizontal strokes, fading at the edges.
     const waterCols = [C.water, C.water, C.wis, C.line, C.pad];
@@ -493,7 +524,19 @@
   renderFilters();
   renderMeta();
   render();
-  updateLaunchBar();
-  recheck();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => paintPond(true)); else paintPond(true);
+
+  const signin = params.get("signin");
+  if (signin) {
+    params.delete("signin");
+    history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : "") + location.hash);
+  }
+  refreshStatus().then(() => {
+    if (signin === "ok") {
+      track("signed_in", { unlocked: auth.unlocked });
+      if (auth.unlocked) toast(`Signed in as @${auth.login}. Every skill is unlocked.`);
+      else openGate();
+    } else if (signin === "cancelled") toast("Sign-in was cancelled.");
+    else if (signin === "failed" || signin === "expired") toast("Sign-in didn’t finish. Try again.");
+  });
 })();

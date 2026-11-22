@@ -1,0 +1,11 @@
+{
+  "name": "giverny",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build:data": "node scripts/build-public.mjs",
+    "test": "node scripts/test-gate.mjs"
+  }
+}

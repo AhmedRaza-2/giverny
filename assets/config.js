@@ -8,20 +8,8 @@ window.GIVERNY_CONFIG = {
   // The repository visitors star to unlock (owner/name).
   repo: "AhmedRaza-2/giverny",
 
-  // Public URL added to copied prompts. Leave empty to use whatever domain the page is served from
-  // (works on GitHub Pages, Vercel, or a custom domain without changes).
-  siteUrl: "",
-
-  // Everything is free until this date (YYYY-MM-DD, visitor's local time).
-  // After it, copying needs a follow + star. Set to "2000-01-01" to gate right away,
-  // or "2999-01-01" to keep it free forever.
-  freeUntil: "2027-01-01",
-
-  // While the gate is on, this many skills (from the top of the list) stay free to copy.
-  freePreview: 6,
-
-  // Re-check a verified visitor's follow and star after this many days.
-  recheckDays: 7,
+  // Unlocking is enforced on the server (api/), which checks GitHub on every copy.
+  // The owner and repo it checks are set there too (GIVERNY_OWNER / GIVERNY_REPO env vars on Vercel).
 
   // Stats. See ANALYTICS.md for the two-minute setup.
   analytics: {
