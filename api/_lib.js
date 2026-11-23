@@ -124,6 +124,8 @@ export async function gh(token, path, init = {}) {
 // Live check, run on every reveal: does this signed-in user star the repo and follow the owner right now?
 export async function checkAccess(session) {
   const { token, login } = session;
+  // The owner can't follow or usefully star their own repo. The login comes from GitHub OAuth, so it can't be faked.
+  if (login.toLowerCase() === CONF.owner.toLowerCase()) return { starred: true, following: true, unlocked: true, owner: true };
   const [o, n] = CONF.repo.split("/");
   const target = CONF.repo.toLowerCase();
 

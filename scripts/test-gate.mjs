@@ -162,6 +162,14 @@ await step("login refuses open redirects", async () => {
   await page.goto(SITE + "/api/auth/login?return=//evil.example"); await page.waitForTimeout(600);
   assert.equal(new URL(page.url()).host, `localhost:${SITE_PORT}`);
 });
+await step("owner account unlocks without star or follow; others still need both", async () => {
+  nextLogin = OWNER; user(OWNER);
+  await page.goto(SITE + "/api/auth/login?return=/"); await page.waitForURL(SITE + "/"); await page.waitForTimeout(600);
+  assert.equal((await reveal("figma")).status, 200);
+  nextLogin = "stranger"; user("stranger");
+  await page.goto(SITE + "/api/auth/login?return=/"); await page.waitForURL(SITE + "/"); await page.waitForTimeout(600);
+  assert.equal((await reveal("figma")).status, 403);
+});
 await step("unknown skill id returns 404", async () => {
   assert.equal((await reveal("not-a-skill")).status, 404);
 });
