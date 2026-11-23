@@ -5,7 +5,7 @@
  *
  * Fields: id, name, by, repo, path?, cat, official?, desc, cmd, alt?, plugin? { add, install }, kind?, ask, stars
  */
-export const UPDATED = "2026-11-22";
+export const UPDATED = "2026-11-23";
 export const SKILLS = [
   {
     "id": "frontend-design",
@@ -23,7 +23,7 @@ export const SKILLS = [
       "install": "frontend-design@claude-plugins-official"
     },
     "ask": "Use frontend-design to build a landing page for my bakery.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "ui-ux-pro-max",
@@ -38,7 +38,7 @@ export const SKILLS = [
       "install": "ui-ux-pro-max@ui-ux-pro-max-skill"
     },
     "ask": "Generate a design system for a fintech dashboard, then build the overview screen.",
-    "stars": 152779
+    "stars": 153200
   },
   {
     "id": "taste-skill",
@@ -53,7 +53,7 @@ export const SKILLS = [
       "install": "taste-skill@taste-skill"
     },
     "ask": "Redesign my homepage with taste-skill and check it in the browser.",
-    "stars": 120004
+    "stars": 120566
   },
   {
     "id": "impeccable",
@@ -68,7 +68,7 @@ export const SKILLS = [
       "install": "impeccable@impeccable"
     },
     "ask": "Run an impeccable critique on this page, then polish it.",
-    "stars": 114909
+    "stars": 115494
   },
   {
     "id": "ui-skills",
@@ -79,7 +79,7 @@ export const SKILLS = [
     "desc": "Opinionated constraints for design engineers: a baseline UI ruleset, accessibility and motion-performance fixes, metadata, and DESIGN.md creation.",
     "cmd": "npx skills add ibelick/ui-skills",
     "ask": "Apply baseline-ui to this component and fix the accessibility issues.",
-    "stars": 11308
+    "stars": 11342
   },
   {
     "id": "interface-design",
@@ -94,7 +94,7 @@ export const SKILLS = [
       "install": "interface-design@interface-design"
     },
     "ask": "Set up interface-design for this project and build the settings screen.",
-    "stars": 6025
+    "stars": 6027
   },
   {
     "id": "oil-ui",
@@ -105,7 +105,7 @@ export const SKILLS = [
     "desc": "Recommends one clear visual direction and refines it against real browser screenshots, or explores three distinct directions side by side when you want to compare.",
     "cmd": "npx skills add oil-oil/oil-ui",
     "ask": "Show me three directions for my pricing page with oil-ui.",
-    "stars": 3863
+    "stars": 3921
   },
   {
     "id": "superdesign",
@@ -120,7 +120,7 @@ export const SKILLS = [
       "install": "superdesign@superdesign"
     },
     "ask": "Use superdesign to draft three versions of my onboarding flow.",
-    "stars": 1047
+    "stars": 1056
   },
   {
     "id": "styleseed",
@@ -135,7 +135,7 @@ export const SKILLS = [
       "install": "styleseed@styleseed"
     },
     "ask": "Use styleseed to rebuild this dashboard and score the result.",
-    "stars": 1029
+    "stars": 1042
   },
   {
     "id": "auteur",
@@ -150,7 +150,7 @@ export const SKILLS = [
       "install": "auteur@auteur"
     },
     "ask": "Use auteur to direct and build a launch site for my app.",
-    "stars": 934
+    "stars": 935
   },
   {
     "id": "awesome-design-md",
@@ -162,7 +162,7 @@ export const SKILLS = [
     "cmd": "curl -o DESIGN.md https://raw.githubusercontent.com/VoltAgent/awesome-design-md/main/design-md/linear.app/DESIGN.md",
     "kind": "file",
     "ask": "Read DESIGN.md and build my settings page in that style.",
-    "stars": 128624
+    "stars": 128755
   },
   {
     "id": "stitch-design-md",
@@ -175,7 +175,7 @@ export const SKILLS = [
     "desc": "Writes a DESIGN.md for your project: a plain-text design system in Google Stitch's format that any coding agent can follow.",
     "cmd": "npx skills add google-labs-code/stitch-skills --skill design-md",
     "ask": "Create a DESIGN.md from my current site's styles.",
-    "stars": 11827
+    "stars": 12191
   },
   {
     "id": "designer-skills",
@@ -190,7 +190,7 @@ export const SKILLS = [
       "install": "ui-design@designer-skills"
     },
     "ask": "Use the ui-design skills to define a type scale and spacing system for my app.",
-    "stars": 3462
+    "stars": 3476
   },
   {
     "id": "typeui",
@@ -201,7 +201,7 @@ export const SKILLS = [
     "desc": "67 ready-made style skills, from bento and neon to enterprise and minimal. Pull one into your project and Claude designs in that style.",
     "cmd": "npx typeui.sh pull bento",
     "ask": "Use the bento style skill to lay out my features section.",
-    "stars": 3770
+    "stars": 3780
   },
   {
     "id": "dembrandt",
@@ -216,7 +216,7 @@ export const SKILLS = [
       "install": "dembrandt@dembrandt"
     },
     "ask": "Review my component library for consistency with dembrandt.",
-    "stars": 202
+    "stars": 222
   },
   {
     "id": "theme-factory",
@@ -229,7 +229,7 @@ export const SKILLS = [
     "desc": "Ten preset color and font themes Claude can apply to slides, docs, reports and landing pages, or a new theme generated on the spot.",
     "cmd": "npx skills add anthropics/skills --skill theme-factory",
     "ask": "Apply a theme-factory theme to my quarterly report.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "brand-guidelines",
@@ -242,7 +242,7 @@ export const SKILLS = [
     "desc": "A working example of a brand skill. Fork it, swap in your colors and type, and Claude keeps every artifact on brand.",
     "cmd": "npx skills add anthropics/skills --skill brand-guidelines",
     "ask": "Turn brand-guidelines into a skill for my company's brand.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "emil-skills",
@@ -253,7 +253,7 @@ export const SKILLS = [
     "desc": "20 skills from the maker of Sonner and Vaul: animate, choreograph, gestures, animation reviews, Apple-style design and design-engineering taste.",
     "cmd": "npx skills@latest add emilkowalski/skills",
     "ask": "Find animation opportunities in this page and choreograph them.",
-    "stars": 58814
+    "stars": 59048
   },
   {
     "id": "gsap",
@@ -269,7 +269,7 @@ export const SKILLS = [
       "install": "gsap-skills@gsap-skills"
     },
     "ask": "Add a ScrollTrigger reveal to the hero with GSAP.",
-    "stars": 18908
+    "stars": 18957
   },
   {
     "id": "feel-better",
@@ -280,7 +280,7 @@ export const SKILLS = [
     "desc": "The small details that make UI feel crafted: animation, typography, icons, hover states, optical alignment, concentric radii, shadows and hit areas.",
     "cmd": "npx skills add jakubkrehel/make-interfaces-feel-better",
     "ask": "Make this card component feel better.",
-    "stars": 4222
+    "stars": 4233
   },
   {
     "id": "view-transitions",
@@ -293,7 +293,7 @@ export const SKILLS = [
     "desc": "Native-feeling page and element transitions using React's View Transitions API.",
     "cmd": "npx skills add vercel-labs/agent-skills --skill vercel-react-view-transitions",
     "ask": "Add a view transition between the list and detail pages.",
-    "stars": 34730
+    "stars": 34798
   },
   {
     "id": "web-design-guidelines",
@@ -306,7 +306,7 @@ export const SKILLS = [
     "desc": "Audits your UI code against Vercel's Web Interface Guidelines: 100+ rules for accessibility, focus, forms, motion and performance.",
     "cmd": "npx skills add vercel-labs/agent-skills --skill web-design-guidelines",
     "ask": "Review my UI against the web design guidelines.",
-    "stars": 34730
+    "stars": 34798
   },
   {
     "id": "kwp-design",
@@ -323,7 +323,7 @@ export const SKILLS = [
       "install": "design@knowledge-work-plugins"
     },
     "ask": "Critique this screen and write the handoff spec.",
-    "stars": 36683
+    "stars": 36736
   },
   {
     "id": "web-quality",
@@ -338,7 +338,7 @@ export const SKILLS = [
       "install": "web-quality-skills@addy-web-quality-skills"
     },
     "ask": "Run a web quality audit on my site and fix the top issues.",
-    "stars": 3118
+    "stars": 3123
   },
   {
     "id": "playwright-skill",
@@ -353,7 +353,7 @@ export const SKILLS = [
       "install": "playwright-skill@playwright-skill"
     },
     "ask": "Open localhost:3000, screenshot every page at mobile width and list layout bugs.",
-    "stars": 3312
+    "stars": 3315
   },
   {
     "id": "webapp-testing",
@@ -366,7 +366,7 @@ export const SKILLS = [
     "desc": "Anthropic's Playwright toolkit for local web apps: verify behaviour, capture screenshots and read browser logs.",
     "cmd": "npx skills add anthropics/skills --skill webapp-testing",
     "ask": "Test the signup flow on my local app and show me screenshots.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "wondel-ux",
@@ -381,7 +381,7 @@ export const SKILLS = [
       "install": "ux-design@wondelai-skills"
     },
     "ask": "Review this page using Refactoring UI principles.",
-    "stars": 2765
+    "stars": 2773
   },
   {
     "id": "color-expert",
@@ -403,7 +403,7 @@ export const SKILLS = [
     "desc": "300+ rules from Apple HIG, Material Design 3 and WCAG 2.2, with one skill per platform from iOS and Android to visionOS and the web.",
     "cmd": "npx skills add ehmo/platform-design-skills",
     "ask": "Check my Android screens against Material Design 3.",
-    "stars": 650
+    "stars": 651
   },
   {
     "id": "hig-doctor",
@@ -434,7 +434,7 @@ export const SKILLS = [
       "install": "chrome-devtools-mcp@claude-plugins-official"
     },
     "ask": "Record a performance trace of my homepage and explain the slow parts.",
-    "stars": 47968
+    "stars": 48046
   },
   {
     "id": "react-best-practices",
@@ -447,7 +447,7 @@ export const SKILLS = [
     "desc": "Vercel's rules for fast React and Next.js: rendering, data fetching, bundle size and unnecessary re-renders.",
     "cmd": "npx skills add vercel-labs/agent-skills --skill vercel-react-best-practices",
     "ask": "Review this Next.js page for performance problems.",
-    "stars": 34730
+    "stars": 34798
   },
   {
     "id": "composition-patterns",
@@ -460,7 +460,7 @@ export const SKILLS = [
     "desc": "Component APIs that scale: compound components, slots, and an end to boolean-prop sprawl.",
     "cmd": "npx skills add vercel-labs/agent-skills --skill vercel-composition-patterns",
     "ask": "Refactor my Modal component with composition patterns.",
-    "stars": 34730
+    "stars": 34798
   },
   {
     "id": "shadcn-ui",
@@ -473,7 +473,7 @@ export const SKILLS = [
     "desc": "Builds with shadcn/ui the intended way: installing, composing and theming components instead of rewriting them.",
     "cmd": "npx skills add google-labs-code/stitch-skills --skill shadcn-ui",
     "ask": "Build a settings form with shadcn/ui components.",
-    "stars": 11827
+    "stars": 12191
   },
   {
     "id": "modern-web",
@@ -489,7 +489,7 @@ export const SKILLS = [
       "install": "modern-web-guidance@claude-plugins-official"
     },
     "ask": "Use modern CSS features to simplify this layout.",
-    "stars": 47968
+    "stars": 48046
   },
   {
     "id": "threejs",
@@ -500,7 +500,7 @@ export const SKILLS = [
     "desc": "13 skills for 3D on the web: scenes, geometry, materials, shaders, lighting, post-processing and React Three Fiber.",
     "cmd": "npx skills add cloudai-x/threejs-skills",
     "ask": "Add an interactive 3D product viewer with Three.js.",
-    "stars": 4341
+    "stars": 4357
   },
   {
     "id": "expo",
@@ -517,7 +517,7 @@ export const SKILLS = [
       "install": "expo@claude-plugins-official"
     },
     "ask": "Build a native-feeling tab layout in my Expo app.",
-    "stars": 4214
+    "stars": 4224
   },
   {
     "id": "react-native-vercel",
@@ -530,7 +530,7 @@ export const SKILLS = [
     "desc": "Vercel's React Native guidance for performant lists, animations and native-feeling UI.",
     "cmd": "npx skills add vercel-labs/agent-skills --skill vercel-react-native-skills",
     "ask": "Fix the jank in my React Native feed.",
-    "stars": 34730
+    "stars": 34798
   },
   {
     "id": "callstack-rn",
@@ -541,7 +541,7 @@ export const SKILLS = [
     "desc": "Callstack's React Native performance and best-practice skills, plus navigation and upgrade guides.",
     "cmd": "npx skills@latest add callstackincubator/agent-skills --skill react-native-best-practices",
     "ask": "Profile and speed up my React Native app's startup.",
-    "stars": 1715
+    "stars": 1719
   },
   {
     "id": "swiftui-pro",
@@ -556,7 +556,7 @@ export const SKILLS = [
       "install": "swiftui-pro@swiftui-agent-skill"
     },
     "ask": "Review my SwiftUI views with swiftui-pro.",
-    "stars": 6610
+    "stars": 6617
   },
   {
     "id": "swiftui-expert",
@@ -571,7 +571,7 @@ export const SKILLS = [
       "install": "swiftui-expert@swiftui-expert-skill"
     },
     "ask": "Adopt Liquid Glass in my app's toolbar.",
-    "stars": 3938
+    "stars": 3943
   },
   {
     "id": "frontend-slides",
@@ -587,7 +587,7 @@ export const SKILLS = [
       "install": "frontend-slides@frontend-slides"
     },
     "ask": "Make a 10-slide pitch deck for my startup.",
-    "stars": 32768
+    "stars": 32814
   },
   {
     "id": "visual-explainer",
@@ -602,7 +602,7 @@ export const SKILLS = [
       "install": "visual-explainer@visual-explainer-marketplace"
     },
     "ask": "Explain this pull request as a visual page.",
-    "stars": 11221
+    "stars": 11236
   },
   {
     "id": "remotion",
@@ -614,7 +614,7 @@ export const SKILLS = [
     "desc": "Make videos with React: product promos, captions, animated maps and renders, all in code.",
     "cmd": "npx skills add remotion-dev/skills",
     "ask": "Make a 20-second promo video of my app with Remotion.",
-    "stars": 7791
+    "stars": 7864
   },
   {
     "id": "excalidraw",
@@ -625,7 +625,7 @@ export const SKILLS = [
     "desc": "Hand-drawn Excalidraw diagrams whose shapes mirror the idea: fan-outs, timelines and convergence instead of uniform box grids.",
     "cmd": "npx skills add coleam00/excalidraw-diagram-skill",
     "ask": "Draw our checkout architecture as an Excalidraw diagram.",
-    "stars": 5326
+    "stars": 5334
   },
   {
     "id": "canvas-design",
@@ -638,7 +638,7 @@ export const SKILLS = [
     "desc": "Posters and visual art as PNG or PDF, built from a written design philosophy first.",
     "cmd": "npx skills add anthropics/skills --skill canvas-design",
     "ask": "Design a poster for our product launch.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "algorithmic-art",
@@ -651,7 +651,7 @@ export const SKILLS = [
     "desc": "Generative art with p5.js: seeded randomness, flow fields and parameters you can tune live.",
     "cmd": "npx skills add anthropics/skills --skill algorithmic-art",
     "ask": "Create a generative flow-field background for my hero.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "web-artifacts-builder",
@@ -664,7 +664,7 @@ export const SKILLS = [
     "desc": "Multi-component HTML artifacts with React, Tailwind and shadcn/ui, bundled into a single file.",
     "cmd": "npx skills add anthropics/skills --skill web-artifacts-builder",
     "ask": "Build an interactive pricing calculator as a single-file artifact.",
-    "stars": 198899
+    "stars": 199373
   },
   {
     "id": "playground",
@@ -680,7 +680,7 @@ export const SKILLS = [
       "install": "playground@claude-plugins-official"
     },
     "ask": "Make a playground to tune the border radius and shadows of my buttons.",
-    "stars": 47968
+    "stars": 48046
   },
   {
     "id": "figma",
@@ -696,7 +696,7 @@ export const SKILLS = [
       "install": "figma@claude-plugins-official"
     },
     "ask": "Implement this Figma frame as a React component.",
-    "stars": 2225
+    "stars": 2227
   },
   {
     "id": "stitch",
@@ -708,7 +708,7 @@ export const SKILLS = [
     "desc": "Works with Google Stitch: generate screens, extract a DESIGN.md, and turn designs into React or React Native code.",
     "cmd": "npx skills add google-labs-code/stitch-skills",
     "ask": "Generate a dashboard in Stitch and export it to React.",
-    "stars": 11827
+    "stars": 12191
   },
   {
     "id": "canva",
@@ -724,7 +724,7 @@ export const SKILLS = [
       "install": "canva@claude-plugins-official"
     },
     "ask": "Resize my Canva launch post for Instagram and LinkedIn.",
-    "stars": 47968
+    "stars": 48046
   },
   {
     "id": "mobbin",
@@ -740,7 +740,7 @@ export const SKILLS = [
       "install": "mobbin@mobbin"
     },
     "ask": "Find how top apps design paywalls and redesign mine.",
-    "stars": 76
+    "stars": 80
   },
   {
     "id": "adobe",
@@ -756,6 +756,6 @@ export const SKILLS = [
       "install": "adobe-for-creativity@claude-plugins-official"
     },
     "ask": "Remove the background from these product photos.",
-    "stars": 47968
+    "stars": 48046
   }
 ];
