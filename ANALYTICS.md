@@ -14,7 +14,7 @@ Use three free tools together. Each answers a different question.
 2. Click **Enable**.
 3. Redeploy once: Deployments, then the latest one, then **Redeploy**.
 
-The site already loads the script (`analytics.vercel: true` in `assets/config.js`). Within a few minutes you'll see visitors, page views, top referrers (instagram.com, linkedin.com), countries, browsers and devices.
+The Vercel Analytics script is loaded directly in `index.html` and enabled in `vercel.json`. Within a few minutes of deployment you'll see visitors, page views, top referrers (instagram.com, linkedin.com), countries, browsers and devices.
 
 Vercel's custom events (clicks, copies) need a paid plan. That's why PostHog handles events below.
 

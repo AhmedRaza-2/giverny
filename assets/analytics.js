@@ -15,13 +15,8 @@
   let ph = null;
 
   // Vercel Web Analytics: visitors, page views, referrers, countries, devices.
-  // Turn it on in the Vercel dashboard (Project, then Analytics, then Enable). Not served on GitHub Pages.
-  if (A.vercel && !isLocal && !host.endsWith("github.io")) {
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    const s = document.createElement("script");
-    s.defer = true; s.src = "/_vercel/insights/script.js";
-    document.head.appendChild(s);
-  }
+  // The script is loaded directly in index.html. Turn it on in the Vercel dashboard (Project, then Analytics, then Enable).
+  // Not served on GitHub Pages. The script tag in index.html will only load on Vercel deployments.
 
   // PostHog: every click, copy, search and unlock, with funnels and dashboards. Free up to 1M events a month.
   if (A.posthogKey && !isLocal) {
