@@ -1,0 +1,7 @@
+node_modules
+dist
+out
+.DS_Store
+.env
+# Regenerate with: node scripts/make-music.mjs
+public/music.wav

@@ -101,3 +101,31 @@ Optional second story: a 10-second screen recording of you clicking "Copy prompt
 - [ ] Instagram bio link set to the tagged link
 - [ ] LinkedIn post published, with the link in the first comment within a minute
 - [ ] Reply to every comment in the first 2 hours
+
+---
+
+## Launch video (Reel / LinkedIn video)
+
+File: `giverny-launch.mp4` (33 s, 1080×1920, with music and sound effects). Cover: `giverny-launch-cover.png`.
+
+**Instagram Reel caption**
+
+> Your AI-built app looks like everyone else's. Here's the fix 👇
+>
+> 10,000+ Claude skills, one search. Type what you want ("edit a video", "optimize my app"), copy one prompt, and Claude installs the skill.
+>
+> Free. 🔗 Link in bio
+>
+> #claudecode #claudeai #aitools #webdesign #vibecoding #buildinpublic
+
+**LinkedIn video post**
+
+> Claude Code can do far more than most people use it for. It just needs the right skills.
+>
+> There are 10,000+ of them on GitHub, scattered across 300+ repos with no search. So I built one: say what you want to do and get the best skills for it, ready to install with one prompt.
+>
+> 33 seconds on how it works 👇 Link in the first comment.
+>
+> #ClaudeCode #AI #DeveloperTools #BuildInPublic
+
+Tip: on Instagram, add a trending sound at low volume under the built-in music, or swap it entirely; trending audio helps Reels reach.
