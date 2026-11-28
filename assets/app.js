@@ -37,6 +37,12 @@
     return body;
   }
 
+  // Remember (in this browser only) that this visitor had unlocked, so if they later unfollow or unstar
+  // we can tell them why copying is locked again, even on their next visit.
+  const UNLOCKED_KEY = "giverny.unlocked";
+  let hadAccess = (() => { try { return localStorage.getItem(UNLOCKED_KEY) === "1"; } catch { return false; } })();
+  const rememberAccess = v => { hadAccess = v; try { v ? localStorage.setItem(UNLOCKED_KEY, "1") : localStorage.removeItem(UNLOCKED_KEY); } catch {} };
+
   function applyAuth(b) {
     const was = auth.unlocked;
     if (b && typeof b.signedIn === "boolean") {
@@ -47,13 +53,37 @@
     if (!was && auth.unlocked) track("unlocked", {});
     updateChrome();
     if (was !== auth.unlocked) render();
+    if (auth.unlocked) { if (!hadAccess) rememberAccess(true); }
+    else if (hadAccess && auth.signedIn && !auth.error) { rememberAccess(false); lostAccess(); }
   }
 
+  let lastStatus = 0;
   async function refreshStatus() {
+    lastStatus = Date.now();
     try { auth.error = null; applyAuth(await api("/api/status")); }
     catch (e) { auth.error = e.message; applyAuth(e.body); }
     return auth;
   }
+
+  // Back to the starting state: every copy button locked, commands hidden, and the unlock popup explaining what changed.
+  function lostAccess() {
+    const noFollow = auth.requireFollow && !auth.following, noStar = !auth.starred;
+    const what = noFollow && noStar ? `unfollowed @${OWNER} and removed your star` : noFollow ? `unfollowed @${OWNER}` : "removed your star from the repo";
+    const fix = noFollow && noStar ? "Follow and star again" : noFollow ? `Follow @${OWNER} again` : "Star the repo again";
+    track("access_lost", { following: auth.following, starred: auth.starred });
+    toast("Copying is locked again.");
+    openGate(null, `You ${what}, so copying is locked again. ${fix} to unlock every skill.`);
+  }
+
+  // Re-check access when the visitor comes back to the tab (e.g. from GitHub) and every minute while it's open.
+  function recheck(minGap) {
+    if (!auth.signedIn || document.hidden || Date.now() - lastStatus < minGap) return;
+    if ($("#gate").open && !auth.unlocked) return; // the open popup runs its own check
+    refreshStatus();
+  }
+  setInterval(() => recheck(55000), 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) recheck(5000); });
+  window.addEventListener("focus", () => recheck(5000));
 
   /* ---------------- formatting ---------------- */
   const fmtStars = n => n >= 1000 ? (n >= 100000 ? Math.round(n / 1000) : (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "")) + "k" : String(n);
@@ -285,8 +315,9 @@
   function denied(e, skill, quiet) {
     const code = e && e.message;
     if (code === "signin" || code === "locked") {
+      const wasOpen = $("#gate").open;
       applyAuth(e.body);
-      if (!quiet || openId) openGate(skill);
+      if ((!quiet || openId) && !( $("#gate").open && !wasOpen )) openGate(skill);
       return;
     }
     if (quiet) return;
@@ -507,9 +538,9 @@
     return setMsg(`Starred. Now follow @${OWNER} and come back to this tab.`);
   }
 
-  function openGate(skill) {
+  function openGate(skill, lede) {
     const total = fmtNum(view.all || 0);
-    $("#gate-lede").textContent = `${skill ? `To copy “${skill.name}” and all ${total} skills,` : `To copy all ${total} skills,`} sign in with GitHub, ${auth.requireFollow ? `follow @${OWNER} and ` : ""}star the repo. It’s free. We check this every time you copy.`;
+    $("#gate-lede").textContent = lede || `${skill ? `To copy “${skill.name}” and all ${total} skills,` : `To copy all ${total} skills,`} sign in with GitHub, ${auth.requireFollow ? `follow @${OWNER} and ` : ""}star the repo. It’s free. We check this every time you copy.`;
     track("gate_open", { skill: skill ? skill.id : undefined, signed_in: auth.signedIn });
     paintGate(); gateMessage();
     if (!gate.open) { if (typeof gate.showModal === "function") gate.showModal(); else gate.setAttribute("open", ""); }

@@ -155,6 +155,33 @@ await step("un-following locks too", async () => {
   user("fan").starred = true; user("fan").following = false;
   assert.equal((await reveal("taste-skill")).status, 403);
 });
+await step("unfollow after unlocking: returning to the tab locks every button again and reopens the popup", async () => {
+  nextLogin = "loyal"; Object.assign(user("loyal"), { following: true, starred: true });
+  await page.goto(SITE + "/api/auth/login?return=/"); await page.waitForURL(SITE + "/"); await page.waitForSelector(".row[data-id]"); await page.waitForTimeout(800);
+  assert.equal(await page.locator(".btn.locked").count(), 0, "should start unlocked");
+  user("loyal").following = false;                       // they unfollow on GitHub
+  await page.waitForTimeout(5300);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));   // and come back to the tab
+  await page.waitForFunction(() => document.getElementById("gate").open, null, { timeout: 5000 });
+  assert.equal(await page.locator(".btn.locked").count(), await page.locator(".row").count(), "buttons not locked again");
+  assert.match(await page.textContent("#gate-lede"), /unfollowed @AhmedRaza-2/);
+  assert.equal(await page.textContent("#st-follow"), "Not yet");
+  assert.equal(await page.textContent("#st-star"), "Starred");
+  assert.equal((await reveal("figma")).status, 403, "server must refuse too");
+});
+await step("following again unlocks without reloading", async () => {
+  user("loyal").following = true;
+  await page.click("#verify-btn"); await page.waitForTimeout(1500);
+  assert.ok(!(await gateOpen()), "popup should close");
+  assert.equal(await page.locator(".btn.locked").count(), 0);
+});
+await step("unstarring between visits: the next visit explains why it's locked", async () => {
+  user("loyal").starred = false;
+  await page.goto(SITE + "/"); await page.waitForFunction(() => document.getElementById("gate").open, null, { timeout: 6000 });
+  assert.match(await page.textContent("#gate-lede"), /removed your star/);
+  assert.equal(await page.locator(".btn.locked").count(), await page.locator(".row").count());
+  await closeGate();
+});
 await step("star found deep in a long star list (fallback path)", async () => {
   nextLogin = "listy"; Object.assign(user("listy"), { following: true, starred: true, listOnly: true });
   await page.goto(SITE + "/api/auth/login?return=/"); await page.waitForURL(SITE + "/"); await page.waitForTimeout(600);
