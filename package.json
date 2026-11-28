@@ -2,7 +2,7 @@
   "name": "giverny",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=18" },
+  "engines": { "node": "22.x" },
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build:data": "node scripts/build-public.mjs",

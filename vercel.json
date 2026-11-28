@@ -1,8 +1,5 @@
 {
   "cleanUrls": true,
-  "analytics": {
-    "enable": true
-  },
   "headers": [
     {
       "source": "/(.*)",
@@ -27,7 +24,7 @@
       ]
     },
     {
-      "source": "/(sitemap.xml|llms.txt|llms-full.txt|robots.txt)",
+      "source": "/(sitemap\\.xml|llms\\.txt|llms-full\\.txt|robots\\.txt)",
       "headers": [
         {
           "key": "Cache-Control",
