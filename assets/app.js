@@ -81,8 +81,19 @@
     const f = view.facets.sections || {};
     const all = Object.values(f).reduce((a, b) => a + b, 0);
     const tabs = [{ id: "all", label: "All", n: all }, ...SECTIONS.map(s => ({ id: s.id, label: s.label, n: f[s.id] || 0 }))];
-    tabsEl.innerHTML = tabs.map(t => `<button class="tab" role="tab" type="button" data-tab="${t.id}" aria-selected="${t.id === view.tab}">${esc(t.label)}<span class="n">${fmtNum(t.n)}</span></button>`).join("");
+    tabsEl.innerHTML = '<span class="tab-ink" id="tab-ink" aria-hidden="true"></span>' + tabs.map(t =>
+      `<button class="tab" role="tab" type="button" data-tab="${t.id}" aria-selected="${t.id === view.tab}" style="--c: var(--c-${t.id})">${t.id === "all" ? "" : "<i></i>"}${esc(t.label)}<span class="n">${fmtNum(t.n)}</span></button>`).join("");
+    moveInk(false);
   }
+  function moveInk(animate) {
+    const ink = $("#tab-ink"), cur = tabsEl.querySelector('[aria-selected="true"]');
+    if (!ink || !cur) return;
+    if (!animate) ink.style.transition = "none";
+    ink.style.width = cur.offsetWidth + "px";
+    ink.style.transform = `translateX(${cur.offsetLeft}px)`;
+    if (!animate) requestAnimationFrame(() => { ink.style.transition = ""; });
+  }
+  window.addEventListener("resize", () => moveInk(false));
 
   function renderFilters() {
     if (view.tab === "all") { filtersEl.innerHTML = ""; filtersEl.hidden = true; return; }
@@ -92,7 +103,7 @@
     const chips = [{ id: "all", label: "Everything", n: total }, ...sec.cats.map(c => ({ id: c.id, label: c.label, n: counts[c.id] || 0 })).filter(c => c.n > 0 || c.id === view.cat)];
     filtersEl.hidden = false;
     filtersEl.innerHTML = chips.map(c =>
-      `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${c.id === view.cat}" aria-selected="${c.id === view.cat}">${esc(c.label)} <span class="n">${fmtNum(c.n)}</span></button>`).join("");
+      `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${c.id === view.cat}" style="--c: var(--c-${view.tab})">${esc(c.label)} <span class="n">${fmtNum(c.n)}</span></button>`).join("");
   }
 
   function cmdBlock(text, label, kind, state) {
@@ -121,7 +132,7 @@
       blocks.push(`<p class="d-ask">Then try: <q>${esc(r.ask)}</q></p>`);
     }
     const where = [secLabel[s.section], catLabel[`${s.section}/${s.cat}`]].filter(Boolean).join(", ");
-    blocks.push(`<p class="d-links"><a href="${repoUrl(s)}" target="_blank" rel="noopener">View on GitHub</a><span>${esc(where)}</span></p>`);
+    blocks.push(`<p class="d-links"><a href="/skills/${encodeURIComponent(s.id)}">Skill page</a><a href="${repoUrl(s)}" target="_blank" rel="noopener">View on GitHub</a><span>${esc(where)}</span></p>`);
     return `<div class="row-detail" id="d-${s.id}">${blocks.join("")}</div>`;
   }
 
@@ -135,7 +146,7 @@
       ? `<button type="button" class="btn locked" data-act="prompt">${icon.lock}<span>Unlock<span class="label-long"> to copy</span></span></button>`
       : `<button type="button" class="btn" data-act="prompt">${icon.copy}<span>Copy<span class="label-long"> prompt</span></span></button>`;
     const badges = [
-      s.official ? '<span class="badge" title="Made by the company behind the tool">Official</span>' : "",
+      s.official ? '<span class="badge off" title="Made by the company behind the tool">Official</span>' : "",
       s.featured ? '<span class="badge pick" title="Hand-picked, with a checked install command">Pick</span>' : "",
       recent(s.added) ? '<span class="badge new" title="Added in the last two weeks">New</span>' : recent(s.updated) ? '<span class="badge upd" title="Changed by its author in the last two weeks">Updated</span>' : ""
     ].join("");
@@ -154,9 +165,12 @@
 
   function render() {
     listEl.innerHTML = view.results.map(rowHtml).join("");
+    if (freshList) { listEl.classList.remove("fresh"); void listEl.offsetWidth; listEl.classList.add("fresh"); freshList = false; }
     const q = qEl.value.trim();
     const where = view.tab === "all" ? "" : ` in ${secLabel[view.tab]}${view.cat !== "all" ? ", " + catLabel[`${view.tab}/${view.cat}`] : ""}`;
-    $("#result-line").textContent = view.error ? "" : q
+    const single = $("#result-line").dataset.single;
+    if (single) { delete $("#result-line").dataset.single; $("#result-line").innerHTML = `Showing one skill. <a href="/" data-clear>See all ${fmtNum(view.all)}</a>`; }
+    else $("#result-line").textContent = view.error ? "" : q
       ? `${fmtNum(view.total)} skills match “${q}”${where}. Best matches first.`
       : `${fmtNum(view.total)} skills${where}. Picks first.`;
     $("#empty").hidden = view.loading || view.error || view.results.length > 0;
@@ -166,11 +180,13 @@
     if (!openId) for (const [k, v] of shown) if (v.error) shown.delete(k);
   }
 
-  let reqSeq = 0;
+  let reqSeq = 0, freshList = false, deepSkill = params.get("skill");
   async function load(append) {
     const seq = ++reqSeq;
     const q = qEl.value.trim();
     const qs = new URLSearchParams({ q, section: view.tab, cat: view.cat, offset: append ? view.results.length : 0, limit: PAGE });
+    const wanted = !append && !q && deepSkill;
+    if (wanted) { qs.set("id", deepSkill); deepSkill = null; }
     view.loading = true; listEl.classList.add("loading");
     try {
       const r = await fetch(`/api/search?${qs}`, { headers: { Accept: "application/json" } });
@@ -179,15 +195,16 @@
       if (seq !== reqSeq) return;
       data.results.forEach(s => byId.set(s.id, s));
       view.results = append ? view.results.concat(data.results) : data.results;
-      Object.assign(view, { total: data.total, all: data.all, repos: data.repos || view.repos, facets: data.facets, error: null });
-      if (!append) openId = null;
+      Object.assign(view, { total: data.total, all: data.all, repos: data.repos || view.repos, totals: data.totals || view.totals, facets: data.facets, error: null });
+      if (!append) { openId = wanted && data.results[0] ? data.results[0].id : null; freshList = true; }
+      if (wanted && data.results[0]) $("#result-line").dataset.single = "1";
     } catch (e) {
       if (seq !== reqSeq) return;
       view.error = e.message;
       view.results = [];
       $("#result-line").textContent = e.message === "no_api" ? "The skill index runs on the live site, giverny-two.vercel.app." : "Couldn’t load skills. Check your connection and try again.";
     } finally {
-      if (seq === reqSeq) { view.loading = false; listEl.classList.remove("loading"); renderTabs(); renderFilters(); render(); renderMeta(); syncUrl(); if (auth.loaded) updateChrome(); }
+      if (seq === reqSeq) { view.loading = false; listEl.classList.remove("loading"); renderTabs(); renderFilters(); render(); renderMeta(); syncUrl(); if (auth.loaded) updateChrome(); field.update(); }
     }
   }
 
@@ -216,10 +233,16 @@
     }
   }
 
+  let counted = false;
   function renderMeta() {
-    if (!view.all) return;
-    $("#meta").textContent = `${fmtNum(view.all)} skills from ${fmtNum(view.repos)} sources, refreshed every week.`;
-    $("#lede").textContent = `${fmtNum(view.all)} public skills for Claude Code, in one search. Say what you want to do, copy the prompt, and Claude installs the skill.`;
+    if (!view.all || counted) return;
+    counted = true;
+    const el = $("#kicker"), target = view.all, repos = view.repos;
+    const text = n => `${fmtNum(n)} Claude skills from ${fmtNum(repos)} repos, updated weekly`;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { el.textContent = text(target); return; }
+    const t0 = performance.now(), dur = 1400;
+    const tick = now => { const p = Math.min(1, (now - t0) / dur); el.textContent = text(Math.round(target * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
   }
 
   /* ---------------- copy (always asks the server first) ---------------- */
@@ -336,6 +359,8 @@
     const tab = e.target.closest(".tab");
     if (!tab || tab.dataset.tab === view.tab) return;
     view.tab = tab.dataset.tab; view.cat = "all";
+    tabsEl.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t === tab));
+    moveInk(true);
     track("tab", { section: view.tab });
     load(false);
   });
@@ -348,6 +373,28 @@
     next.click(); setTimeout(() => { const t = tabsEl.querySelector(`[data-tab="${next.dataset.tab}"]`); if (t) t.focus(); }, 250);
   });
   $("#more-btn").addEventListener("click", () => load(true));
+  $("#search-form").addEventListener("submit", e => {
+    e.preventDefault(); clearTimeout(qT); load(false);
+    document.getElementById("directory").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  // The placeholder types out example requests until someone focuses the box.
+  (function typer() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const base = "What do you want Claude to do?";
+    const lines = ["optimize my React app", "edit a video with captions", "write landing page copy", "add login to my app", "find security bugs", "make a pitch deck"];
+    let li = 0, ci = 0, dir = 1, wait = 1800;
+    const step = () => {
+      if (document.activeElement === qEl || qEl.value) { qEl.placeholder = base; return setTimeout(step, 1000); }
+      const word = lines[li];
+      if (wait > 0) { const w = wait; wait = 0; return setTimeout(step, w); }
+      ci += dir;
+      qEl.placeholder = "Try: " + word.slice(0, ci) + (dir > 0 ? "▍" : "");
+      if (dir > 0 && ci >= word.length) { dir = -1; wait = 1600; }
+      else if (dir < 0 && ci <= 0) { dir = 1; li = (li + 1) % lines.length; wait = 300; }
+      setTimeout(step, dir > 0 ? 55 : 25);
+    };
+    setTimeout(step, 2200);
+  })();
   $("#ideas").innerHTML = IDEAS.map(t => `<button type="button" class="idea">${esc(t)}</button>`).join("");
   $("#ideas").addEventListener("click", e => {
     const b = e.target.closest(".idea");
@@ -396,8 +443,6 @@
   $("#star-btn").href = repoHome;
   $("#submit-link").href = submitUrl;
   $("#empty-submit").href = submitUrl;
-  $("#soon-submit").href = submitUrl;
-  $("#soon-star").href = repoHome;
   $("#foot-repo").href = repoHome;
   const footOwner = $("#foot-owner");
   footOwner.href = ownerUrl; footOwner.textContent = `Made by @${OWNER}`;
@@ -505,76 +550,102 @@
     if (gate.open) { paintGate(); gateMessage(); }
   }
 
-  /* ---------------- the pond ---------------- */
-  const canvas = $("#pond");
-  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
-  let raf;
-  function rng(seed) {
-    return () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-  }
-  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  /* ---------------- the skill field: one dot per skill, lit by your search ---------------- */
+  const field = (() => {
+    const cv = $("#field"), labelsEl = $("#field-labels"), hero = cv.parentElement;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const COLOR = { design: "#FF5C8A", media: "#FFB020", coding: "#3DD6F5", marketing: "#34D399", productivity: "#9B87FF" };
+    const WIDE = { design: [.12, .2], productivity: [.11, .53], media: [.12, .85], coding: [.86, .38], marketing: [.86, .85] };
+    const TALL = { design: [.16, .07], productivity: [.84, .08], media: [.12, .93], coding: [.55, .97], marketing: [.9, .9] };
+    let W = 0, H = 0, dpr = 1, ctx, dots = [], clusters = {}, totals = null, t0 = 0, raf = 0, visible = true, mx = 0, my = 0, built = false;
+    const rnd = (() => { let s = 7; return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; })();
 
-  function paintPond(animate) {
-    cancelAnimationFrame(raf);
-    const rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(rect.width * dpr);
-    canvas.height = Math.round(rect.height * dpr);
-    const ctx = canvas.getContext("2d");
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const W = rect.width, H = rect.height, S = Math.max(W, H * 1.25) / 520;
-    const r = rng(1840);
-    const C = { water: css("--water"), wis: css("--wisteria"), pad: css("--pad"), bridge: css("--bridge"), lily: css("--lily"), deep: css("--lily-deep"), line: css("--line") };
-    const dabs = [];
-    // Reflections of sky and willow: short horizontal strokes, fading at the edges.
-    const waterCols = [C.water, C.water, C.wis, C.line, C.pad];
-    const n = Math.round(620 * (W * H) / (520 * 520));
-    for (let i = 0; i < n; i++) {
-      const x = r() * W, y = r() * H;
-      const dx = (x / W - .5) * 2, dy = (y / H - .5) * 2;
-      const edge = 1 - Math.min(1, Math.hypot(dx * .9, dy * .98) + (r() - .5) * .3);
-      if (edge <= 0.02) continue;
-      dabs.push({ x, y, a: (r() - .5) * .22, len: (12 + r() * 30) * S, w: (3 + r() * 5) * S, c: waterCols[(r() * waterCols.length) | 0], o: (.25 + r() * .45) * Math.min(1, edge * 1.6) });
+    function size() {
+      const r = hero.getBoundingClientRect();
+      W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    // Lily pads, then flowers on some of them.
-    const pads = [[.28, .3, .17], [.66, .22, .12], [.56, .58, .2], [.22, .72, .13], [.84, .66, .1], [.4, .88, .09]];
-    pads.forEach(([px, py, pr], k) => {
-      const cx = px * W, cy = py * H, rx = pr * W, ry = rx * .38;
-      for (let i = 0; i < 70; i++) {
-        const t = r() * Math.PI * 2, d = Math.sqrt(r());
-        dabs.push({ x: cx + Math.cos(t) * rx * d, y: cy + Math.sin(t) * ry * d, a: (r() - .5) * .5, len: (9 + r() * 18) * S, w: (3.5 + r() * 4.5) * S, c: r() < .62 ? C.pad : C.bridge, o: .55 + r() * .35, layer: 1 });
-      }
-      if (k % 2 === 0 || k === 3) {
-        const fx = cx + (r() - .5) * rx * .5, fy = cy - ry * .25;
-        for (let i = 0; i < 16; i++) {
-          const t = -Math.PI / 2 + (r() - .5) * 2.2;
-          dabs.push({ x: fx + (r() - .5) * 6 * S, y: fy + (r() - .5) * 3 * S, a: t, len: (6 + r() * 10) * S, w: (3 + r() * 3) * S, c: r() < .55 ? C.lily : C.deep, o: .75 + r() * .25, layer: 2 });
+    function build() {
+      if (!totals) return;
+      size();
+      const tall = W < 760, A = tall ? TALL : WIDE;
+      const sum = Object.values(totals).reduce((a, b) => a + b, 0);
+      const cap = tall ? 2600 : 11000, scale = Math.min(1, cap / sum);
+      const k = Math.min(W, H) / (tall ? 190 : 265);
+      dots = []; clusters = {};
+      for (const [sec, count] of Object.entries(totals)) {
+        const n = Math.max(1, Math.round(count * scale)), R = Math.sqrt(n) * k * (tall ? 0.9 : 1);
+        clusters[sec] = { x: A[sec][0] * W, y: A[sec][1] * H, R, n, count };
+        for (let i = 0; i < n; i++) {
+          const u = rnd(), r = R * Math.pow(u, 0.62);
+          dots.push({ sec, r, a: rnd() * Math.PI * 2, w: (0.03 + rnd() * 0.07) * (rnd() < .5 ? -1 : 1) / (0.35 + r / R), s: 0.9 + rnd() * 1.3, rank: rnd(), lit: 0, tl: 0, d: rnd() * 0.7 });
         }
       }
+      dots.sort((a, b) => a.sec < b.sec ? -1 : 1);
+      labels();
+      built = true;
+      if (!t0) t0 = performance.now();
+      if (reduce) draw(performance.now() + 1e5); else if (!raf) loop();
+    }
+    function labels() {
+      labelsEl.innerHTML = Object.entries(clusters).map(([sec, c]) =>
+        `<button type="button" class="field-label" data-tab="${sec}" style="left:${c.x}px; top:${Math.max(18, c.y - c.R - 22)}px; --c:${COLOR[sec]}"><i></i>${esc(secLabel[sec] || sec)} <b data-n="${sec}">${fmtNum(c.count)}</b></button>`).join("");
+      setTimeout(() => labelsEl.querySelectorAll(".field-label").forEach(l => l.classList.add("show")), reduce ? 0 : 1200);
+    }
+    function draw(now) {
+      const t = (now - t0) / 1000;
+      ctx.clearRect(0, 0, W, H);
+      const searching = !!qEl.value.trim();
+      let cur = null;
+      for (const d of dots) {
+        const c = clusters[d.sec];
+        if (d.sec !== cur) { cur = d.sec; ctx.fillStyle = COLOR[cur]; }
+        d.lit += (d.tl - d.lit) * 0.08;
+        const intro = reduce ? 1 : Math.min(1, Math.max(0, (t - d.d) / 1.5));
+        const e = 1 - Math.pow(1 - intro, 3);
+        const ang = d.a + d.w * t;
+        const px = (mx * 14) * (0.4 + d.r / (c.R + 1)), py = (my * 10) * (0.4 + d.r / (c.R + 1));
+        const tx = c.x + Math.cos(ang) * d.r + px, ty = c.y + Math.sin(ang) * d.r * 0.82 + py;
+        const x = W / 2 + (tx - W / 2) * e, y = H / 2 + (ty - H / 2) * e;
+        const base = searching ? 0.14 : 0.5 + 0.25 * Math.sin(t * 0.8 + d.rank * 20);
+        const alpha = Math.min(1, (base + d.lit * 0.9) * e);
+        const sz = d.s * (1 + d.lit * 1.3);
+        ctx.globalAlpha = alpha;
+        ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+        if (d.lit > 0.2) { ctx.globalAlpha = 0.12 * d.lit * e; ctx.fillRect(x - sz * 2, y - sz * 2, sz * 4, sz * 4); }
+      }
+      ctx.globalAlpha = 1;
+    }
+    function loop() {
+      raf = requestAnimationFrame(now => { raf = 0; if (visible && !document.hidden) draw(now); if (visible) loop(); });
+    }
+    function update() {
+      if (view.totals && !totals) { totals = view.totals; build(); }
+      if (!built) return;
+      const q = qEl.value.trim(), f = view.facets.sections || {};
+      for (const [sec, c] of Object.entries(clusters)) {
+        const m = q ? (f[sec] || 0) : 0;
+        const frac = m ? Math.min(1, Math.max(m / c.count, 18 / c.n)) : 0;
+        for (const d of dots) if (d.sec === sec) d.tl = d.rank < frac ? 1 : 0;
+        const b = labelsEl.querySelector(`[data-n="${sec}"]`);
+        if (b) b.textContent = q ? `${fmtNum(m)} match` : fmtNum(c.count);
+      }
+      if (reduce) draw(performance.now() + 1e5);
+    }
+    labelsEl.addEventListener("click", e => {
+      const b = e.target.closest(".field-label");
+      if (!b) return;
+      const tab = tabsEl.querySelector(`[data-tab="${b.dataset.tab}"]`);
+      if (tab) tab.click();
+      document.getElementById("directory").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     });
-    // Water first, then pads, then flowers; shuffled within each layer so it paints in like a hand would.
-    const order = dabs.map((d, i) => [d.layer || 0, r(), i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => dabs[x[2]]);
-    ctx.lineCap = "round";
-    const draw = d => {
-      ctx.globalAlpha = d.o; ctx.strokeStyle = d.c; ctx.lineWidth = d.w;
-      ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x + Math.cos(d.a) * d.len, d.y + Math.sin(d.a) * d.len); ctx.stroke();
-    };
-    ctx.clearRect(0, 0, W, H);
-    if (!animate || reduceMotion.matches) { order.forEach(draw); ctx.globalAlpha = 1; return; }
-    const start = performance.now(), dur = 1400;
-    let drawn = 0;
-    const step = now => {
-      const p = Math.min(1, (now - start) / dur);
-      const target = Math.floor(order.length * (1 - Math.pow(1 - p, 2.2)));
-      for (; drawn < target; drawn++) draw(order[drawn]);
-      if (p < 1) raf = requestAnimationFrame(step); else { for (; drawn < order.length; drawn++) draw(order[drawn]); ctx.globalAlpha = 1; }
-    };
-    raf = requestAnimationFrame(step);
-  }
-  let rT;
-  window.addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(() => paintPond(false), 150); });
-  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => paintPond(false));
+    hero.addEventListener("pointermove", e => { const r = hero.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width - .5; my = (e.clientY - r.top) / r.height - .5; });
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible && built && !reduce && !raf) loop(); }).observe(hero);
+    let rt;
+    window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (totals) { build(); update(); } }, 200); });
+    return { update };
+  })();
 
   /* ---------------- boot ---------------- */
   (async () => {
@@ -586,7 +657,6 @@
     if (view.tab !== "all" && !SECTIONS.some(s => s.id === view.tab)) view.tab = "all";
     load(false);
   })();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => paintPond(true)); else paintPond(true);
 
   const signin = params.get("signin");
   if (signin) {

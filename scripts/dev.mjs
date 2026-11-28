@@ -10,7 +10,25 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const port = Number(process.argv[2] || process.env.PORT || 3000);
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".json": "application/json", ".xml": "application/xml", ".txt": "text/plain", ".pdf": "application/pdf" };
 
+// Apply vercel.json rewrites (":param" segments) so pretty URLs work locally like on Vercel.
+const vercel = JSON.parse(await readFile(join(root, "vercel.json"), "utf8").catch(() => "{}"));
+const rewrites = (vercel.rewrites || []).map(r => ({ re: new RegExp("^" + r.source.replace(/:(\w+)/g, "(?<$1>[^/]+)") + "$"), dest: r.destination }));
+function rewrite(url) {
+  const u = new URL(url, "http://x");
+  for (const r of rewrites) {
+    const m = u.pathname.match(r.re);
+    if (!m) continue;
+    let dest = r.dest;
+    for (const [k, v] of Object.entries(m.groups || {})) dest = dest.replace(":" + k, encodeURIComponent(v));
+    const d = new URL(dest, "http://x");
+    u.searchParams.forEach((v, k) => d.searchParams.set(k, v));
+    return d.pathname + d.search;
+  }
+  return url;
+}
+
 http.createServer(async (req, res) => {
+  req.url = rewrite(req.url);
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname);
   try {
     if (path.startsWith("/api/")) {

@@ -40,6 +40,22 @@ Add a source: put `{ "repo": "owner/name", "section": "coding" }` in `data/sourc
 node scripts/index-skills.mjs && node scripts/build-public.mjs
 ```
 
+## Search engines and AI answers (SEO, AEO, GEO)
+
+Every skill and category has its own server-rendered page, so Google, Bing and AI answer engines (ChatGPT, Claude, Perplexity, Google AI Overviews) can read and cite them without running JavaScript.
+
+| URL | What it is |
+|---|---|
+| `/claude-skills` | Directory hub: every section and category |
+| `/claude-skills/<section>` | e.g. `/claude-skills/design`, `/claude-skills/video`, `/claude-skills/coding` |
+| `/claude-skills/<section>/<category>` | e.g. `/claude-skills/coding/security`, `/claude-skills/marketing/seo-and-ai-search` |
+| `/skills/<id>` | One page per skill: what it does, how to install it, related skills |
+| `/sitemap.xml` | Every page above |
+| `/llms.txt`, `/llms-full.txt` | Plain-text guides for LLMs |
+| `/robots.txt` | Allows search and AI crawlers |
+
+Each page has a unique title and description, a canonical URL, Open Graph tags, breadcrumbs, and JSON-LD (`WebSite` with `SearchAction`, `Organization`, `FAQPage`, `ItemList`, `CollectionPage`, `SoftwareSourceCode`, `BreadcrumbList`). The home page ships 24 pre-rendered skills and a visible FAQ written to be quoted by answer engines. `node scripts/build-public.mjs` regenerates all of it; the weekly Action also pings IndexNow (Bing, and through it ChatGPT search) with new and updated pages.
+
 ## How a copied prompt works
 
 Each **Copy prompt** button gives Claude Code everything it needs:

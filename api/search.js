@@ -10,7 +10,8 @@ export default function handler(req, res) {
     section: q.get("section") || "all",
     cat: q.get("cat") || "all",
     offset: int(q.get("offset"), 0, 100000),
-    limit: int(q.get("limit"), 40, 100) || 40
+    limit: int(q.get("limit"), 40, 100) || 40,
+    id: (q.get("id") || "").slice(0, 120)
   });
   res.statusCode = 200;
   res.setHeader("Content-Type", "application/json; charset=utf-8");

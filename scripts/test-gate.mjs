@@ -186,6 +186,32 @@ await step("owner account unlocks without star or follow; others still need both
 await step("unknown skill id returns 404", async () => {
   assert.equal((await reveal("not-a-skill")).status, 404);
 });
+await step("SEO: skill, category, section and directory pages render real HTML with valid JSON-LD", async () => {
+  for (const [path, h1] of [["/skills/frontend-design", "Frontend Design"], ["/claude-skills/coding/security", "Best Claude Skills for Security"], ["/claude-skills/video", "Claude Skills for Video"], ["/claude-skills", "Claude Skills Directory"]]) {
+    const r = await fetch(SITE + path); const html = await r.text();
+    assert.equal(r.status, 200, path);
+    assert.match(html, new RegExp(`<h1>${h1}`), `${path} h1`);
+    assert.match(html, /<link rel="canonical" href="https:\/\/[^"]+">/, `${path} canonical`);
+    for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(m[1]);
+    assert.ok(!/npx skills add [a-z]/i.test(html.replace(/owner\/repo/g, "")), `${path} leaks an install command`);
+  }
+  assert.equal((await fetch(SITE + "/skills/not-a-real-skill")).status, 404);
+});
+await step("SEO: home page has skills, FAQ and structured data without JavaScript", async () => {
+  const html = await (await fetch(SITE + "/")).text();
+  assert.ok((html.match(/class="row"/g) || []).length >= 20, "pre-rendered rows");
+  assert.match(html, /"@type":"FAQPage"/); assert.match(html, /"@type":"SearchAction"/);
+  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(m[1]);
+});
+await step("SEO: sitemap, robots and llms.txt are published", async () => {
+  const sm = await (await fetch(SITE + "/sitemap.xml")).text();
+  assert.ok((sm.match(/<url>/g) || []).length > 10000, "sitemap size");
+  assert.match(await (await fetch(SITE + "/robots.txt")).text(), /GPTBot[\s\S]*Sitemap:/);
+  assert.match(await (await fetch(SITE + "/llms.txt")).text(), /^# Giverny/);
+});
+await step("deep link /?skill=id opens that skill", async () => {
+  await page.goto(SITE + "/?skill=impeccable"); await page.waitForSelector('.row[data-id="impeccable"] .row-detail', { timeout: 8000 });
+});
 await step("no page errors", async () => { assert.deepEqual(errors, []); });
 
 await browser.close(); site.kill(); fake.close();

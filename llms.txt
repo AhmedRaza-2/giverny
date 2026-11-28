@@ -1,0 +1,105 @@
+# Giverny: Claude Skills Directory
+
+> Giverny is a searchable directory of 10,838 free, open-source Claude skills (Agent Skills / SKILL.md) for Claude Code, collected from 316 public GitHub repos and refreshed weekly. Each skill page explains what the skill does and how to install it; on the site, people copy one prompt and Claude Code installs the skill.
+
+## What are Claude skills?
+
+Claude skills are folders of instructions, scripts and resources that Claude loads when a task needs them. Each has a SKILL.md file with a name and description. Claude reads the description and loads the full skill when a request matches. They work in Claude Code, the Claude apps and the Claude API, and in other agents that read SKILL.md.
+
+## How to install a Claude skill
+
+- One command in a terminal: `npx skills add owner/repo --skill skill-name`
+- As a Claude Code plugin: `/plugin marketplace add owner/repo` then `/plugin install plugin@marketplace`
+- By hand: copy the skill folder into `~/.claude/skills/`
+- On Giverny: sign in with GitHub, copy the skill's prompt, paste it into Claude Code.
+
+## Browse by section
+
+- [Claude Skills for Design and UI](https://giverny-two.vercel.app/claude-skills/design): 1,172 skills. Claude design skills teach Claude to build interfaces with real taste: a committed aesthetic instead of a template, solid design systems, motion that feels hand-made, accessibility checks, and platform rules for iOS, Android and the web. Use them in Claude Code whenever you build or polish UI.
+- [Claude Skills for Video, Images and Audio](https://giverny-two.vercel.app/claude-skills/video): 840 skills. Claude video and media skills let Claude edit footage with FFmpeg, build motion graphics in code with Remotion and HyperFrames, generate images, video and music with models from fal.ai, MiniMax and others, and handle voice and audio with ElevenLabs.
+- [Claude Code Skills for Developers](https://giverny-two.vercel.app/claude-skills/coding): 6,178 skills. Claude Code skills for developers add proven engineering workflows (planning, test-driven development, debugging, code review) and deep knowledge of specific stacks: security audits, performance, authentication, databases, cloud and mobile. Many come straight from the teams behind the tools, like Stripe, Supabase, Cloudflare, Sentry and Vercel.
+- [Claude Skills for Marketing and SEO](https://giverny-two.vercel.app/claude-skills/marketing): 1,003 skills. Claude marketing skills cover SEO and AI search (GEO), copywriting, conversion rate optimisation, paid ads, email, social media and growth strategy, so Claude can audit pages, write campaigns and plan launches like a seasoned marketer.
+- [Claude Skills for Documents and Productivity](https://giverny-two.vercel.app/claude-skills/productivity): 1,645 skills. Claude productivity skills handle Word, Excel, PowerPoint and PDF files, product management, research, writing, notes and business analysis, so Claude turns raw material into finished deliverables.
+- [Full directory](https://giverny-two.vercel.app/claude-skills)
+- [Search](https://giverny-two.vercel.app/?q=)
+
+## Best Claude Skills for Design and UI
+
+- [Frontend Design](https://giverny-two.vercel.app/skills/frontend-design): Anthropic's own skill for distinctive, production-grade interfaces. It makes Claude commit to an aesthetic instead of falling back on generic layouts. (by Anthropic)
+- [Theme Factory](https://giverny-two.vercel.app/skills/theme-factory): Ten preset color and font themes Claude can apply to slides, docs, reports and landing pages, or a new theme generated on the spot. (by Anthropic)
+- [Brand Guidelines](https://giverny-two.vercel.app/skills/brand-guidelines): A working example of a brand skill. Fork it, swap in your colors and type, and Claude keeps every artifact on brand. (by Anthropic)
+- [Canvas Design](https://giverny-two.vercel.app/skills/canvas-design): Posters and visual art as PNG or PDF, built from a written design philosophy first. (by Anthropic)
+- [Algorithmic Art](https://giverny-two.vercel.app/skills/algorithmic-art): Generative art with p5.js: seeded randomness, flow fields and parameters you can tune live. (by Anthropic)
+- [Web Artifacts Builder](https://giverny-two.vercel.app/skills/web-artifacts-builder): Multi-component HTML artifacts with React, Tailwind and shadcn/ui, bundled into a single file. (by Anthropic)
+- [UI UX Pro Max](https://giverny-two.vercel.app/skills/ui-ux-pro-max): A searchable design library of styles, color palettes, font pairings and UX rules across web and mobile stacks. Claude picks a full design system before it writes code. (by Next Level Builder)
+- [Awesome DESIGN.md](https://giverny-two.vercel.app/skills/awesome-design-md): 84 design systems analysed from real sites like Linear, Apple, Notion and Figma, each as a DESIGN.md. Drop one in your project and Claude builds in that visual language. (by VoltAgent)
+- [Taste Skill](https://giverny-two.vercel.app/skills/taste-skill): Art direction, real reference photos and a browser check, so Claude builds company-grade websites instead of a template landing page. (by Leonxlnx)
+- [Impeccable](https://giverny-two.vercel.app/skills/impeccable): A design vocabulary for your agent: polish, bolder, critique, audit. Includes a detector and an optional hook that catches AI slop before Claude calls the work done. (by Paul Bakaus)
+- [Emil Kowalski's Skills](https://giverny-two.vercel.app/skills/emil-skills): 20 skills from the maker of Sonner and Vaul: animate, choreograph, gestures, animation reviews, Apple-style design and design-engineering taste. (by Emil Kowalski)
+- [Playground](https://giverny-two.vercel.app/skills/playground): Self-contained HTML playgrounds with visual controls and a live preview, including templates for exploring design options. (by Anthropic)
+
+## Best Claude Skills for Video, Images and Audio
+
+- [HyperFrames](https://giverny-two.vercel.app/skills/hyperframes): HeyGen's open-source AI video editor: edit your own footage or make videos from HTML, then render to MP4, all from Claude. (by HeyGen)
+- [Baoyu Skills](https://giverny-two.vercel.app/skills/baoyu): Image generation, cover images, comics, infographics, slide decks, YouTube transcripts and posting to social platforms. (by Jim Liu)
+- [MiniMax Skills](https://giverny-two.vercel.app/skills/minimax): Multimodal skills from MiniMax: music generation, images, vision, GIF stickers, slides and office documents. (by MiniMax)
+- [Remotion](https://giverny-two.vercel.app/skills/remotion): Make videos with React: product promos, captions, animated maps and renders, all in code. (by Remotion)
+- [Animated Shorts](https://giverny-two.vercel.app/skills/animated-shorts): Viral animated story shorts with 2D characters in a 3D world, built with three.js and Remotion. (by mromidev)
+- [Claude Code Video Toolkit](https://giverny-two.vercel.app/skills/video-toolkit): Make videos with Claude Code: script, AI voiceover, music, clips and a final render, all on open-source tools. (by Digital Samba)
+- [ElevenLabs](https://giverny-two.vercel.app/skills/elevenlabs): Text to speech, speech to text, dubbing, music, sound effects, voice changing and voice agents with ElevenLabs. (by ElevenLabs)
+- [fal.ai Media Skills](https://giverny-two.vercel.app/skills/fal-skills): 36 skills for generating images, video, audio and 3D with fal.ai: product photography, characters, commercials and cinematic shots. (by fal.ai)
+- [Fal AI Media](https://giverny-two.vercel.app/skills/affaan-m-ecc--fal-ai-media): Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to-image (Nano Banana), text/image-to-video (Seedance, Kling, Veo 3), text-to-speech (CSM-1B), and… (by affaan-m)
+- [Slack GIF Creator](https://giverny-two.vercel.app/skills/anthropics-skills--slack-gif-creator): Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. (by Anthropic)
+- [Canopy Part Title](https://giverny-two.vercel.app/skills/heygen-com-hyperframes--canopy-part-title): Leaves sweep through the frame and part to reveal the headline. HyperFrames block, 1920×1080, 12s, 11 variables. (by HeyGen)
+- [3D Asset Generation](https://giverny-two.vercel.app/skills/openmontageinc-openmontage--3d-asset-generation): Generate, reconstruct, inspect, and route production 3D assets for OpenMontage worlds using Atlas Cloud, fal.ai, licensed catalogs, and Blender. (by OpenMontageInc)
+
+## Best Claude Code Skills for Developers
+
+- [Matt Pocock's Skills](https://giverny-two.vercel.app/skills/mattpocock-skills): Skills from Matt Pocock's own agent setup: grill your plan, implement specs, diagnose bugs, review code, improve architecture and write PRs. (by Matt Pocock)
+- [Superpowers](https://giverny-two.vercel.app/skills/superpowers): A full development method for Claude: brainstorm, write a plan, then build with test-driven development, systematic debugging and code review by subagents. (by Jesse Vincent)
+- [Webapp Testing](https://giverny-two.vercel.app/skills/webapp-testing): Anthropic's Playwright toolkit for local web apps: verify behaviour, capture screenshots and read browser logs. (by Anthropic)
+- [gstack](https://giverny-two.vercel.app/skills/gstack): Garry Tan's Claude Code setup: opinionated tools that act as CEO, designer, eng manager, QA and release engineer. Needs Bun. (by Garry Tan)
+- [Security Audit](https://giverny-two.vercel.app/skills/cloudflare-security-audit): A multi-phase security audit whose findings are independently verified and machine-checked before they reach you. (by Cloudflare)
+- [Chrome DevTools](https://giverny-two.vercel.app/skills/chrome-devtools): Claude controls and inspects a live Chrome: performance traces, network requests, console messages and screenshots. (by Google Chrome)
+- [Modern Web Guidance](https://giverny-two.vercel.app/skills/modern-web): Keeps Claude current with the latest web platform features and best practices, straight from the Chrome team. (by Google Chrome)
+- [Claude Code Workflows](https://giverny-two.vercel.app/skills/wshobson-agents): 185 skills in dozens of plugins covering most stacks: Python, Node, Kubernetes, testing, security and more. (by Seth Hobson)
+- [React Best Practices](https://giverny-two.vercel.app/skills/react-best-practices): Vercel's rules for fast React and Next.js: rendering, data fetching, bundle size and unnecessary re-renders. (by Vercel)
+- [Composition Patterns](https://giverny-two.vercel.app/skills/composition-patterns): Component APIs that scale: compound components, slots, and an end to boolean-prop sprawl. (by Vercel)
+- [React Native Skills](https://giverny-two.vercel.app/skills/react-native-vercel): Vercel's React Native guidance for performant lists, animations and native-feeling UI. (by Vercel)
+- [shadcn/ui](https://giverny-two.vercel.app/skills/shadcn-ui): Builds with shadcn/ui the intended way: installing, composing and theming components instead of rewriting them. (by Google Labs)
+
+## Best Claude Skills for Marketing and SEO
+
+- [Marketing Skills](https://giverny-two.vercel.app/skills/marketingskills): 50+ marketing skills: CRO, copywriting, SEO, ads, email, pricing, launches, referrals and analytics. (by Corey Haines)
+- [Claude SEO](https://giverny-two.vercel.app/skills/claude-seo): A full SEO toolkit: technical SEO, content, schema, local SEO, backlinks and AI search, in 26 sub-skills. (by Daniel Agrici)
+- [GEO SEO](https://giverny-two.vercel.app/skills/geo-seo): Get found in AI answers: optimise your site for ChatGPT, Perplexity and Google AI Overviews, plus classic SEO. (by Zubair Trabzada)
+- [Advertising Skills](https://giverny-two.vercel.app/skills/advertising): Direct-response advertising: paid ads, ad creative, offers, funnels and conversion paths. (by Kim Barrett)
+- [OpenClaudia Marketing](https://giverny-two.vercel.app/skills/openclaudia): 77 open-source marketing skills covering SEO, content, social, email, ads and growth experiments. (by OpenClaudia)
+- [Email Marketing Bible](https://giverny-two.vercel.app/skills/email-bible): Plans, writes and audits email marketing, from the founder of SmartrMail. (by George Hartley)
+- [Article Writing](https://giverny-two.vercel.app/skills/affaan-m-ecc--article-writing): Write articles, guides, blog posts, tutorials, newsletter issues, and other long-form content in a distinctive voice derived from supplied examples or brand guidance. (by affaan-m)
+- [Shipping And Launch](https://giverny-two.vercel.app/skills/addyosmani-agent-skills--shipping-and-launch): Prepares production launches. Use when preparing to deploy to production, or when asking what needs to be in place before shipping. Use when you need a pre-launch checklist, when… (by Addy Osmani)
+- [Community Sweep](https://giverny-two.vercel.app/skills/thedotmack-claude-mem--community-sweep): Land community pull requests as the contributor and answer community issues on thedotmack/claude-mem. Takes stock of every open PR (the owner's own included, except the ones the… (by thedotmack)
+- [Understand Dashboard](https://giverny-two.vercel.app/skills/egonex-ai-understand-anything--understand-dashboard): Launch the interactive web dashboard to visualize a codebase's knowledge graph (by Egonex-AI)
+- [Job Application Assistant](https://giverny-two.vercel.app/skills/ai-job-search-dev-ai-job-search--job-application-assistant): Assists with job applications: evaluating job postings, tailoring CVs, writing cover letters, and preparing for interviews. (by ai-job-search-dev)
+- [Ab Testing](https://giverny-two.vercel.app/skills/coreyhaines31-marketingskills--ab-testing): When the user wants to plan, run, or read A/B tests, or asks a judgement call on one: is the result real, can we stop, which version won, is this worth testing at all: sample… (by Corey Haines)
+
+## Best Claude Skills for Documents and Productivity
+
+- [Office Documents](https://giverny-two.vercel.app/skills/document-skills): Anthropic's official Word, Excel, PowerPoint and PDF skills: create, edit, fill and analyse office files. (by Anthropic)
+- [Scientific Agent Skills](https://giverny-two.vercel.app/skills/scientific): Turn Claude into a research scientist: 170+ skills for biology, chemistry, data analysis and literature review. (by K-Dense)
+- [Knowledge Work Plugins](https://giverny-two.vercel.app/skills/knowledge-work): Anthropic's plugins for everyday work in sales, finance, legal, marketing, support, data and product. (by Anthropic)
+- [Google Workspace](https://giverny-two.vercel.app/skills/workspace-cli): Work with Gmail, Drive, Docs, Sheets and Calendar through the Google Workspace CLI. (by Google Workspace)
+- [PM Skills Marketplace](https://giverny-two.vercel.app/skills/pm-skills-huryn): 100+ product management skills from discovery and research to execution, analytics and go-to-market. (by Paweł Huryn)
+- [Product Manager Skills](https://giverny-two.vercel.app/skills/pm-skills-dean): Battle-tested product frameworks for discovery, definition, delivery and strategy. (by Dean Peters)
+- [LLM Council](https://giverny-two.vercel.app/skills/llm-council): Runs a decision past five AI advisors who review each other's answers before giving you a verdict. (by Remy)
+- [Architecture Decision Records](https://giverny-two.vercel.app/skills/affaan-m-ecc--architecture-decision-records): Capture architectural decisions as numbered ADR markdown files in docs/adr/ with context, alternatives considered, consequences, and an index README. (by affaan-m)
+- [Discernment Nudge](https://giverny-two.vercel.app/skills/anthropics-skills--discernment-nudge): After you give a substantive answer or draft that the user may act on — advice or recommendations, drafted artifacts such as goals, plans, pitches, proposals, or emails, estimates… (by Anthropic)
+- [Document Generate](https://giverny-two.vercel.app/skills/garrytan-gstack--document-generate): Generate missing documentation from scratch for a feature, module, or entire project. (by Garry Tan)
+- [Documentation And Adrs](https://giverny-two.vercel.app/skills/addyosmani-agent-skills--documentation-and-adrs): Records decisions and documentation, and detects when documentation has drifted from the code it describes. (by Addy Osmani)
+- [Knowledge Agent](https://giverny-two.vercel.app/skills/thedotmack-claude-mem--knowledge-agent): Build and query AI-powered knowledge bases from claude-mem observations. (by thedotmack)
+
+## Optional
+
+- [Complete category list with top skills](https://giverny-two.vercel.app/llms-full.txt)
+- [Sitemap of every skill page](https://giverny-two.vercel.app/sitemap.xml)
+- [Source code](https://github.com/AhmedRaza-2/giverny)

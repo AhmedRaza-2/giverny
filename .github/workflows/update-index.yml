@@ -46,3 +46,8 @@ jobs:
           git add -A
           git commit -m "Update skill index: $summary"
           git push
+      - name: Tell search engines what changed (IndexNow)
+        if: success()
+        run: |
+          sleep 240   # give Vercel time to deploy the new pages
+          node scripts/indexnow.mjs || true

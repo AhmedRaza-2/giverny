@@ -53,6 +53,7 @@ const N = docs.length;
 const post = new Map();
 docs.forEach((d, i) => { for (const t of new Set(Object.values(d.sets).flatMap(x => [...x]))) { if (!post.has(t)) post.set(t, []); post.get(t).push(i); } });
 const REPOS = new Set(SKILLS.map(s => s.repo.toLowerCase())).size;
+const TOTALS = Object.fromEntries(SECTIONS.map(id => [id, SKILLS.filter(s => s.section === id).length]));
 const idf = t => Math.log(1 + N / (1 + (df.get(t) || 0)));
 // Prefix lookup for partial words ("optim" -> optimize, optimization).
 const vocab = [...df.keys()].sort();
@@ -134,7 +135,11 @@ const pub = s => {
   return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined && v !== ""));
 };
 
-export function search({ q = "", section = "all", cat = "all", offset = 0, limit = 40 }) {
+export function search({ q = "", section = "all", cat = "all", offset = 0, limit = 40, id = "" }) {
+  if (id) {
+    const d = docs.find(x => x.s.id === id);
+    return { q, section: "all", cat: "all", total: d ? 1 : 0, offset: 0, all: N, repos: REPOS, totals: TOTALS, facets: { sections: Object.fromEntries(SECTIONS.map(s => [s, s === d?.s.section ? 1 : 0])), cats: {} }, results: d ? [pub(d.s)] : [] };
+  }
   const C = concepts(q);
   C.list.forEach(c => { c.pre = prefixed(c.term); });
   let ranked;
@@ -164,7 +169,7 @@ export function search({ q = "", section = "all", cat = "all", offset = 0, limit
   const page = filtered.slice(offset, offset + limit);
   const topScore = filtered.length ? filtered[0].score : 0;
   return {
-    q, section, cat, total: filtered.length, offset, all: N, repos: REPOS,
+    q, section, cat, total: filtered.length, offset, all: N, repos: REPOS, totals: TOTALS,
     facets: { sections, cats },
     results: page.map((r, k) => ({ ...pub(r.d.s), best: C.list.length && offset + k < 3 && r.score >= topScore * 0.7 ? true : undefined }))
   };
