@@ -72,24 +72,36 @@ const errors = [];
 page.on("pageerror", e => errors.push(e.message));
 const reveal = async id => page.evaluate(async id => { const r = await fetch(`/api/reveal?id=${id}`); return { status: r.status, body: await r.json() }; }, id);
 const clip = () => page.evaluate(() => navigator.clipboard.readText());
-const clickCopy = async id => { await page.click(`.row[data-id="${id}"] [data-act="prompt"]`); await page.waitForTimeout(400); };
+const QUERY = { "frontend-design": "frontend design", impeccable: "impeccable", gsap: "gsap skills", "taste-skill": "taste skill" };
+const showRow = async id => { await page.fill("#q", QUERY[id] || id); await page.waitForSelector(`.row[data-id="${id}"]`, { timeout: 5000 }); };
+const clickCopy = async id => { await showRow(id); await page.click(`.row[data-id="${id}"] [data-act="prompt"]`); await page.waitForTimeout(400); };
 const gateOpen = () => page.evaluate(() => document.getElementById("gate").open);
 const closeGate = () => page.evaluate(() => { const g = document.getElementById("gate"); if (g.open) g.close(); });
 
 console.log("Strict unlock tests");
 
-await step("public skill data ships without any install commands", async () => {
-  const txt = await (await fetch(`${SITE}/data/skills.js`)).text();
-  assert.ok(!/npx |plugin install|curl -o|"cmd"/.test(txt), "commands found in public data");
+await step("search results never include install commands", async () => {
+  for (const q of ["", "edit a video", "stripe payments", "impeccable"]) {
+    const txt = await (await fetch(`${SITE}/api/search?q=${encodeURIComponent(q)}&limit=100`)).text();
+    assert.ok(!/"cmd"|"alt"|"plugin"|plugin install|"prompt"/.test(txt), `commands leaked for "${q}"`);
+  }
+  assert.equal((await fetch(`${SITE}/data/skills.json`)).status, 404);
+});
+await step("search understands intent", async () => {
+  const top = async q => (await (await fetch(`${SITE}/api/search?q=${encodeURIComponent(q)}`)).json()).results.slice(0, 5).map(r => r.section + "/" + r.cat);
+  assert.ok((await top("edit a video")).some(c => c.startsWith("media/")), "video");
+  assert.ok((await top("add login to my app")).includes("coding/auth"), "login");
+  assert.ok((await top("improve my seo")).includes("marketing/seo"), "seo");
 });
 await step("server-only files are not reachable", async () => {
-  for (const p of ["/api/_skills", "/api/_lib"]) assert.equal((await fetch(SITE + p)).status, 404, p);
+  for (const p of ["/api/_skills", "/api/_lib", "/api/_index", "/api/_featured", "/api/_skills.js", "/api/_index.js"]) assert.equal((await fetch(SITE + p)).status, 404, p);
 });
 await step("signed-out: reveal is refused (401)", async () => {
   await page.goto(SITE + "/"); await page.waitForTimeout(500);
   assert.equal((await reveal("frontend-design")).status, 401);
 });
 await step("signed-out: every copy button is locked, none copies", async () => {
+  await page.waitForSelector(".row");
   assert.equal(await page.locator(".btn.locked").count(), await page.locator(".row").count());
   await page.evaluate(() => navigator.clipboard.writeText("EMPTY"));
   await clickCopy("frontend-design");
@@ -120,13 +132,14 @@ await step("star only: still locked", async () => {
 await step("star + follow: unlocks after 'Check again', copy puts the real prompt on the clipboard", async () => {
   user("fan").following = true;
   await page.click("#launch [data-open-gate]"); await page.click("#verify-btn"); await page.waitForTimeout(1500);
+  await page.waitForSelector(".row");
   assert.equal(await page.locator(".btn.locked").count(), 0, "buttons still locked");
   await clickCopy("impeccable");
   const text = await clip();
   assert.match(text, /npx impeccable install/); assert.match(text, /Found on Giverny: http:\/\/localhost:3011/);
 });
 await step("expanding a row shows the real commands", async () => {
-  await page.click('.row[data-id="gsap"] .r-title'); await page.waitForTimeout(500);
+  await showRow("gsap"); await page.click('.row[data-id="gsap"] .r-title'); await page.waitForTimeout(500);
   assert.match(await page.textContent('.row[data-id="gsap"] .row-detail'), /greensock\/gsap-skills/);
 });
 await step("un-starring locks the very next copy (checked live)", async () => {

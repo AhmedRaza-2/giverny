@@ -9,19 +9,36 @@
 
 ## What's inside
 
-54 skills from 39 makers, including Anthropic, Vercel, Google Labs, Figma, Expo, GreenSock, Remotion, Paul Bakaus, Emil Kowalski and Addy Osmani, grouped into:
+10,000+ public skills for Claude Code from 300+ GitHub repos, in five sections:
 
-| Category | Examples |
+| Section | Examples |
 |---|---|
-| Taste & direction | Frontend Design, UI UX Pro Max, Taste Skill, Impeccable, UI Skills |
-| Design systems | Awesome DESIGN.md, DESIGN.md Writer, Designer Skills, Theme Factory |
-| Motion & feel | Emil Kowalski's Skills, GSAP, Make Interfaces Feel Better |
-| Review & accessibility | Web Design Guidelines, Web Quality Skills, Playwright Skill, Color Expert |
-| Frameworks & platforms | React Best Practices, shadcn/ui, Three.js, Expo, SwiftUI Pro |
-| Slides, diagrams & media | Frontend Slides, Visual Explainer, Remotion, Excalidraw |
-| Design tool bridges | Figma, Stitch, Canva, Mobbin, Adobe |
+| Design | Frontend Design, Impeccable, Taste Skill, UI UX Pro Max, Emil Kowalski, Open Design |
+| Video & media | HyperFrames, Remotion, OpenMontage, ElevenLabs, fal.ai, FFmpeg, Blender |
+| Coding | Superpowers, Matt Pocock, gstack, Trail of Bits, Stripe, Supabase, Sentry, Cloudflare |
+| Marketing | Corey Haines, Claude SEO, GEO SEO, advertising, email, social |
+| Productivity | Office documents, product management, research, notes, business |
 
-Every install command comes from the skill's own README or plugin manifest. Star counts refresh every Monday through a GitHub Action.
+## How the catalog works
+
+```
+data/sources.json ──► scripts/index-skills.mjs ──► api/_index.js ─┐
+ (repos to read)      (reads every SKILL.md)       (auto index)    ├─► api/_skills.js ─► /api/search  (results, no commands)
+                                                    api/_featured.js ┘                  ─► /api/reveal  (commands, after GitHub check)
+                                                    (hand-written picks)
+```
+
+- **Indexer.** For every repo in `data/sources.json` it downloads only the `SKILL.md` files (sparse, shallow clone), reads each skill's name and description, files it into a section and category using `data/taxonomy.json`, and writes the install command (`npx skills add owner/repo --skill name`, plus the Claude Code plugin route when the repo has a marketplace).
+- **Updates.** Each skill keeps the git hash of its `SKILL.md`. When an author changes it, the hash changes and the skill shows **Updated**. New skills show **New**, and deleted ones drop out. `data/changes.json` lists what changed in the last run.
+- **Discovery.** `scripts/discover.mjs` searches GitHub for popular skill repos not yet listed and writes them to `data/candidates.json` for review.
+- **Weekly.** `.github/workflows/update-index.yml` runs all of this every Monday and commits the result, and Vercel redeploys.
+- **Search.** `/api/search` builds an index once per server instance and answers in a few milliseconds. It maps intent to skills ("optimize my app" → performance, Core Web Vitals, profiling) using the `intents` in `data/taxonomy.json`, then ranks by match, coverage, popularity and editorial picks.
+
+Add a source: put `{ "repo": "owner/name", "section": "coding" }` in `data/sources.json` (or `"section": "auto", "fallback": "coding"` for mixed collections), then run:
+
+```bash
+node scripts/index-skills.mjs && node scripts/build-public.mjs
+```
 
 ## How a copied prompt works
 
@@ -55,7 +72,7 @@ Every skill is locked until a visitor signs in with GitHub, follows the owner an
 
 - **Real identity.** Visitors sign in with GitHub OAuth (no scopes, public profile only), so nobody can claim someone else's username.
 - **Checked on every copy.** `/api/reveal` asks GitHub live, each time, whether the signed-in user stars the repo and follows the owner. Un-star or un-follow and the next copy is refused.
-- **Nothing to copy in the page.** Install commands and prompts live only in `api/_skills.js` on the server. The browser gets names and descriptions (`data/skills.js`, generated) until the check passes.
+- **Nothing to copy in the page.** Install commands and prompts live only on the server (`api/`). Search results carry names and descriptions only.
 - **Sessions** are AES-256-GCM encrypted, HttpOnly, SameSite=Lax cookies. Sign-in uses a CSRF state check and refuses open redirects.
 
 ### One-time setup (Vercel)
@@ -82,7 +99,7 @@ Until these are set, the site loads and browses fine, but copying says sign-in i
 
 ### Editing skills
 
-Edit `api/_skills.js`, then run `node scripts/build-public.mjs` to regenerate the public `data/skills.js`. Run `node scripts/test-gate.mjs` to test the whole unlock flow against a fake GitHub.
+Hand-written picks live in `api/_featured.js`; everything else comes from the indexer. Run `node scripts/test-gate.mjs` to test search and the whole unlock flow against a fake GitHub.
 
 The original skill repos are public, and so is this repo's source. The gate controls Giverny's one-click copy, not the open-source skills themselves.
 

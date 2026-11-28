@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Giverny · Design skills for Claude</title>
-  <meta name="description" content="Every design and frontend skill for Claude Code in one place. Copy one prompt, paste it into Claude, and the skill installs itself.">
+  <title>Giverny · Every Claude skill, one search</title>
+  <meta name="description" content="Search thousands of public Claude Code skills for design, video, coding, marketing and productivity. Describe what you want to do, copy one prompt, and Claude installs the skill.">
   <meta name="theme-color" content="#F3F6F3" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1E20" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Giverny: design skills for Claude">
-  <meta property="og:description" content="Every UI, UX and frontend skill for Claude Code, verified and one copy away.">
+  <meta property="og:title" content="Giverny: every Claude skill, one search">
+  <meta property="og:description" content="Thousands of Claude Code skills for design, video, coding and marketing. Describe what you want to do and get the right skill.">
   <meta property="og:image" content="https://giverny-two.vercel.app/og.png">
   <meta property="og:url" content="https://giverny-two.vercel.app/">
   <link rel="canonical" href="https://giverny-two.vercel.app/">
@@ -36,7 +36,7 @@
   <header class="top">
     <a class="brand" href="./" aria-label="Giverny home">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#lily"/></svg>
-      <span>Giverny</span><span class="ver" title="Version 1.0">v1.0</span>
+      <span>Giverny</span><span class="ver" title="Version 2.0">v2.0</span>
     </a>
     <nav class="top-nav" aria-label="Site">
       <a href="#how">How it works</a>
@@ -52,30 +52,34 @@
   <main>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <h1 id="hero-title">Give Claude taste.</h1>
-        <p class="lede">Every design and frontend skill for Claude Code, checked and in one place. Copy a prompt, paste it into Claude, and the skill installs itself.</p>
+        <h1 id="hero-title">Give Claude any skill.</h1>
+        <p class="lede" id="lede">Thousands of public skills for Claude Code, in one search. Say what you want to do, copy the prompt, and Claude installs the skill.</p>
         <div class="search">
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4.5 4.5"/></svg>
           <label class="sr" for="q">Search skills</label>
-          <input id="q" type="search" placeholder="Search animation, accessibility, Figma…" autocomplete="off" spellcheck="false">
+          <input id="q" type="search" placeholder="What do you want Claude to do?" autocomplete="off" spellcheck="false" enterkeyhint="search">
           <kbd aria-hidden="true">/</kbd>
         </div>
+        <div class="ideas" id="ideas" aria-label="Try a search"></div>
         <p class="meta" id="meta"></p>
       </div>
       <canvas class="pond" id="pond" aria-hidden="true"></canvas>
     </section>
 
     <section class="directory" id="directory" aria-label="Skills">
-      <div class="filters" role="tablist" aria-label="Categories" id="filters"></div>
+      <div class="tabs" role="tablist" aria-label="Sections" id="tabs"></div>
+      <div class="filters" aria-label="Categories" id="filters"></div>
+      <p class="result-line" id="result-line" aria-live="polite"></p>
       <ol class="list" id="list"></ol>
+      <div class="more" id="more" hidden><button type="button" class="btn" id="more-btn">Show more</button></div>
       <div class="empty" id="empty" hidden>
         <p>No skill matches “<span id="empty-q"></span>”.</p>
         <p>Try a broader word, or <a id="empty-submit" href="#">suggest a skill</a> we’re missing.</p>
       </div>
       <aside class="soon" aria-labelledby="soon-title">
         <div>
-          <h2 id="soon-title">Many more skills are on the way.</h2>
-          <p>This is version 1.0. More design and frontend skills are being added very soon. Star the repo to see them first, or suggest one we’re missing.</p>
+          <h2 id="soon-title">More skills land every week.</h2>
+          <p>The index refreshes every week: new skills appear with a “New” label, and skills their authors changed show “Updated”. Star the repo to follow along, or suggest a source we’re missing.</p>
         </div>
         <div class="soon-actions">
           <a class="btn btn-primary" id="soon-star" href="#" target="_blank" rel="noopener">Star on GitHub</a>
@@ -88,16 +92,16 @@
       <h2 id="how-title">From this page to a skill Claude uses, in under a minute</h2>
       <ol class="steps">
         <li>
+          <h3>Say what you want to do</h3>
+          <p>“Optimize my app”, “edit a video”, “write landing page copy”. The search reads intent, not just keywords.</p>
+        </li>
+        <li>
           <h3>Copy the prompt</h3>
-          <p>Each skill has a ready prompt with the exact install command from its author’s repo.</p>
+          <p>Each skill comes with a ready prompt holding the exact install command from its author’s repo.</p>
         </li>
         <li>
           <h3>Paste it into Claude Code</h3>
-          <p>Claude runs the command, checks the skill loaded, and falls back to a manual install if needed.</p>
-        </li>
-        <li>
-          <h3>Ask for the work</h3>
-          <p>Skills load on their own when your request matches. Each prompt ends with an example to try.</p>
+          <p>Claude installs the skill, checks it loaded, and shows you how to use it.</p>
         </li>
       </ol>
       <p class="how-note">Prefer the terminal? Open any skill to see the raw command and the Claude Code plugin route.</p>
@@ -162,7 +166,6 @@
   </svg>
 
   <script src="assets/config.js"></script>
-  <script src="data/skills.js"></script>
   <script src="assets/analytics.js"></script>
   <script src="assets/app.js"></script>
 </body>

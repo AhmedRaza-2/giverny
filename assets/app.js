@@ -2,27 +2,20 @@
   "use strict";
 
   const CFG = window.GIVERNY_CONFIG;
-  const SKILLS = window.GIVERNY_SKILLS || [];
   const OWNER = CFG.owner;
   const REPO = CFG.repo;
   const OFFICIAL_DIR = "anthropics/claude-plugins-official";
-
-  const CATS = [
-    { id: "taste", label: "Taste & direction" },
-    { id: "systems", label: "Design systems" },
-    { id: "motion", label: "Motion & feel" },
-    { id: "review", label: "Review & accessibility" },
-    { id: "platforms", label: "Frameworks & platforms" },
-    { id: "visual", label: "Slides, diagrams & media" },
-    { id: "tools", label: "Design tool bridges" }
-  ];
-  const catLabel = Object.fromEntries(CATS.map(c => [c.id, c.label]));
+  const IDEAS = ["Optimize my app", "Edit a video", "Write landing page copy", "Add login to my app", "Improve my SEO", "Make my site beautiful", "Find security bugs", "Make a pitch deck"];
 
   const $ = (s, el = document) => el.querySelector(s);
   const track = (name, props) => { try { window.giverny && window.giverny.track(name, props); } catch {} };
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const params = new URLSearchParams(location.search);
-  SKILLS.forEach((s, i) => { s.rank = i; });
+
+  // Section and category names come from data/taxonomy.json (shared with the indexer and the search engine).
+  let SECTIONS = [];
+  const secLabel = {}, catLabel = {};
+  const byId = new Map(); // every skill shown so far, for copy and details
 
   /* ---------------- access (decided by the server only) ---------------- */
   // Nothing in this file can unlock a skill. Prompts and commands only come from /api/reveal,
@@ -69,8 +62,10 @@
   /* ---------------- rendering ---------------- */
   const listEl = $("#list");
   const filtersEl = $("#filters");
+  const tabsEl = $("#tabs");
   const qEl = $("#q");
-  let activeCat = "all";
+  const PAGE = 40;
+  const view = { tab: params.get("tab") || "all", cat: params.get("cat") || "all", results: [], total: 0, all: 0, repos: 0, facets: { sections: {}, cats: {} }, loading: false, error: null };
   let openId = null;
 
   const icon = {
@@ -79,28 +74,25 @@
     check: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>',
     star: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .9l2.2 4.5 4.9.7-3.6 3.5.9 4.9L8 12.2l-4.4 2.3.9-4.9L.9 6.1l4.9-.7z"/></svg>'
   };
+  const fmtNum = n => Number(n || 0).toLocaleString();
+  const recent = d => d && (Date.now() - new Date(d + "T00:00:00").getTime()) < 14 * 864e5;
 
-  function renderFilters() {
-    const counts = {};
-    SKILLS.forEach(s => { counts[s.cat] = (counts[s.cat] || 0) + 1; });
-    const chips = [{ id: "all", label: "All skills", n: SKILLS.length }, ...CATS.map(c => ({ ...c, n: counts[c.id] || 0 }))];
-    filtersEl.innerHTML = chips.map(c =>
-      `<button class="chip" role="tab" type="button" data-cat="${c.id}" aria-selected="${c.id === activeCat}" style="--c: var(--c-${c.id})">` +
-      (c.id === "all" ? "" : `<span class="dot" aria-hidden="true"></span>`) +
-      `${esc(c.label)} <span class="n">${c.n}</span></button>`
-    ).join("");
+  function renderTabs() {
+    const f = view.facets.sections || {};
+    const all = Object.values(f).reduce((a, b) => a + b, 0);
+    const tabs = [{ id: "all", label: "All", n: all }, ...SECTIONS.map(s => ({ id: s.id, label: s.label, n: f[s.id] || 0 }))];
+    tabsEl.innerHTML = tabs.map(t => `<button class="tab" role="tab" type="button" data-tab="${t.id}" aria-selected="${t.id === view.tab}">${esc(t.label)}<span class="n">${fmtNum(t.n)}</span></button>`).join("");
   }
 
-  function score(s, terms) {
-    let total = 0;
-    const fields = [[s.name, 4], [s.by, 2.5], [catLabel[s.cat], 1.5], [s.desc, 1], [s.repo, 1]];
-    for (const t of terms) {
-      let best = 0;
-      for (const [f, w] of fields) if (f && f.toLowerCase().includes(t)) best = Math.max(best, w);
-      if (!best) return 0;
-      total += best;
-    }
-    return total;
+  function renderFilters() {
+    if (view.tab === "all") { filtersEl.innerHTML = ""; filtersEl.hidden = true; return; }
+    const sec = SECTIONS.find(s => s.id === view.tab);
+    const counts = view.facets.cats || {};
+    const total = Object.values(counts).reduce((a, b) => a + b, 0);
+    const chips = [{ id: "all", label: "Everything", n: total }, ...sec.cats.map(c => ({ id: c.id, label: c.label, n: counts[c.id] || 0 })).filter(c => c.n > 0 || c.id === view.cat)];
+    filtersEl.hidden = false;
+    filtersEl.innerHTML = chips.map(c =>
+      `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${c.id === view.cat}" aria-selected="${c.id === view.cat}">${esc(c.label)} <span class="n">${fmtNum(c.n)}</span></button>`).join("");
   }
 
   function cmdBlock(text, label, kind, state) {
@@ -125,9 +117,11 @@
       blocks.push(`<div><h4>${title}</h4>${cmdBlock(r.cmd, "command", "cmd")}</div>`);
       if (r.slash) blocks.push(`<div><h4>Or inside Claude Code</h4>${cmdBlock(r.slash, "plugin commands", "slash")}</div>`);
       if (r.alt) blocks.push(`<div><h4>Alternative</h4>${cmdBlock(r.alt, "alternative command", "alt")}</div>`);
+      if (r.note) blocks.push(`<p class="d-ask">${esc(r.note)}</p>`);
       blocks.push(`<p class="d-ask">Then try: <q>${esc(r.ask)}</q></p>`);
     }
-    blocks.push(`<p class="d-links"><a href="${repoUrl(s)}" target="_blank" rel="noopener">View on GitHub</a></p>`);
+    const where = [secLabel[s.section], catLabel[`${s.section}/${s.cat}`]].filter(Boolean).join(", ");
+    blocks.push(`<p class="d-links"><a href="${repoUrl(s)}" target="_blank" rel="noopener">View on GitHub</a><span>${esc(where)}</span></p>`);
     return `<div class="row-detail" id="d-${s.id}">${blocks.join("")}</div>`;
   }
 
@@ -136,15 +130,20 @@
     const open = openId === s.id;
     const stars = s.repo === OFFICIAL_DIR
       ? `<span class="r-stars dir" title="Listed in Anthropic's official plugin directory">Official directory</span>`
-      : `<span class="r-stars" title="${s.stars.toLocaleString()} GitHub stars on ${esc(s.repo)}">${icon.star}${fmtStars(s.stars)}</span>`;
+      : `<span class="r-stars" title="${fmtNum(s.stars)} GitHub stars on ${esc(s.repo)}">${icon.star}${fmtStars(s.stars)}</span>`;
     const primary = locked
       ? `<button type="button" class="btn locked" data-act="prompt">${icon.lock}<span>Unlock<span class="label-long"> to copy</span></span></button>`
       : `<button type="button" class="btn" data-act="prompt">${icon.copy}<span>Copy<span class="label-long"> prompt</span></span></button>`;
-    return `<li class="row" data-id="${s.id}" style="--c: var(--c-${s.cat})">
+    const badges = [
+      s.official ? '<span class="badge" title="Made by the company behind the tool">Official</span>' : "",
+      s.featured ? '<span class="badge pick" title="Hand-picked, with a checked install command">Pick</span>' : "",
+      recent(s.added) ? '<span class="badge new" title="Added in the last two weeks">New</span>' : recent(s.updated) ? '<span class="badge upd" title="Changed by its author in the last two weeks">Updated</span>' : ""
+    ].join("");
+    return `<li class="row" data-id="${esc(s.id)}" style="--c: var(--c-${s.section})">
       <div class="row-head">
         <div class="r-name">
-          <button type="button" class="r-title" aria-expanded="${open}" aria-controls="d-${s.id}"><span class="dot" aria-hidden="true"></span><span class="t">${esc(s.name)}</span></button>
-          <div class="r-by"><span>${esc(s.by)}</span>${s.official ? '<span class="badge" title="Maintained by the company behind the tool">Official</span>' : ""}</div>
+          <button type="button" class="r-title" aria-expanded="${open}" aria-controls="d-${esc(s.id)}"><span class="dot" aria-hidden="true"></span><span class="t">${esc(s.name)}</span></button>
+          <div class="r-by"><span>${esc(s.by)}</span>${s.best ? '<span class="badge best">Best match</span>' : ""}${badges}</div>
         </div>
         <p class="r-desc">${esc(s.desc)}</p>
         ${stars}
@@ -154,17 +153,50 @@
   }
 
   function render() {
-    const q = qEl.value.trim().toLowerCase();
-    const terms = q.split(/\s+/).filter(Boolean);
-    let items = SKILLS.filter(s => activeCat === "all" || s.cat === activeCat);
-    if (terms.length) {
-      items = items.map(s => [s, score(s, terms)]).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1] || a[0].rank - b[0].rank).map(([s]) => s);
-    }
-    listEl.innerHTML = items.map(rowHtml).join("");
-    $("#empty").hidden = items.length > 0;
-    $("#empty-q").textContent = qEl.value.trim();
-    if (openId && !isLocked() && !shown.has(openId)) loadDetail(openId);
+    listEl.innerHTML = view.results.map(rowHtml).join("");
+    const q = qEl.value.trim();
+    const where = view.tab === "all" ? "" : ` in ${secLabel[view.tab]}${view.cat !== "all" ? ", " + catLabel[`${view.tab}/${view.cat}`] : ""}`;
+    $("#result-line").textContent = view.error ? "" : q
+      ? `${fmtNum(view.total)} skills match “${q}”${where}. Best matches first.`
+      : `${fmtNum(view.total)} skills${where}. Picks first.`;
+    $("#empty").hidden = view.loading || view.error || view.results.length > 0;
+    $("#empty-q").textContent = q;
+    $("#more").hidden = view.results.length >= view.total || !view.results.length;
+    if (openId && !isLocked() && !shown.has(openId) && byId.has(openId)) loadDetail(openId);
     if (!openId) for (const [k, v] of shown) if (v.error) shown.delete(k);
+  }
+
+  let reqSeq = 0;
+  async function load(append) {
+    const seq = ++reqSeq;
+    const q = qEl.value.trim();
+    const qs = new URLSearchParams({ q, section: view.tab, cat: view.cat, offset: append ? view.results.length : 0, limit: PAGE });
+    view.loading = true; listEl.classList.add("loading");
+    try {
+      const r = await fetch(`/api/search?${qs}`, { headers: { Accept: "application/json" } });
+      if (!r.ok) throw new Error(r.status === 404 ? "no_api" : "error");
+      const data = await r.json();
+      if (seq !== reqSeq) return;
+      data.results.forEach(s => byId.set(s.id, s));
+      view.results = append ? view.results.concat(data.results) : data.results;
+      Object.assign(view, { total: data.total, all: data.all, repos: data.repos || view.repos, facets: data.facets, error: null });
+      if (!append) openId = null;
+    } catch (e) {
+      if (seq !== reqSeq) return;
+      view.error = e.message;
+      view.results = [];
+      $("#result-line").textContent = e.message === "no_api" ? "The skill index runs on the live site, giverny-two.vercel.app." : "Couldn’t load skills. Check your connection and try again.";
+    } finally {
+      if (seq === reqSeq) { view.loading = false; listEl.classList.remove("loading"); renderTabs(); renderFilters(); render(); renderMeta(); syncUrl(); if (auth.loaded) updateChrome(); }
+    }
+  }
+
+  function syncUrl() {
+    const p = new URLSearchParams();
+    if (qEl.value.trim()) p.set("q", qEl.value.trim());
+    if (view.tab !== "all") p.set("tab", view.tab);
+    if (view.cat !== "all") p.set("cat", view.cat);
+    history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : "") + location.hash);
   }
 
   let loadingId = null;
@@ -177,7 +209,7 @@
       applyAuth(r);
     } catch (e) {
       if (e.message !== "signin" && e.message !== "locked") shown.set(id, { error: true });
-      denied(e, SKILLS.find(s => s.id === id), true);
+      denied(e, byId.get(id), true);
     } finally {
       loadingId = null;
       if (openId === id) render();
@@ -185,11 +217,9 @@
   }
 
   function renderMeta() {
-    const sources = new Set(SKILLS.map(s => s.by)).size;
-    const official = SKILLS.filter(s => s.official).length;
-    $("#meta").textContent = `${SKILLS.length} skills from ${sources} makers, ${official} of them official. Every install command checked against its repo. More are on the way.`;
-    const d = new Date(window.GIVERNY_UPDATED + "T00:00:00");
-    $("#updated").textContent = d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    if (!view.all) return;
+    $("#meta").textContent = `${fmtNum(view.all)} skills from ${fmtNum(view.repos)} sources, refreshed every week.`;
+    $("#lede").textContent = `${fmtNum(view.all)} public skills for Claude Code, in one search. Say what you want to do, copy the prompt, and Claude installs the skill.`;
   }
 
   /* ---------------- copy (always asks the server first) ---------------- */
@@ -278,7 +308,8 @@
   listEl.addEventListener("click", e => {
     const row = e.target.closest(".row");
     if (!row) return;
-    const s = SKILLS.find(x => x.id === row.dataset.id);
+    const s = byId.get(row.dataset.id);
+    if (!s) return;
     const title = e.target.closest(".r-title");
     if (title) {
       openId = openId === s.id ? null : s.id;
@@ -297,9 +328,34 @@
   filtersEl.addEventListener("click", e => {
     const chip = e.target.closest(".chip");
     if (!chip) return;
-    activeCat = chip.dataset.cat;
-    track("filter", { category: activeCat });
-    renderFilters(); render();
+    view.cat = chip.dataset.cat;
+    track("filter", { section: view.tab, category: view.cat });
+    load(false);
+  });
+  tabsEl.addEventListener("click", e => {
+    const tab = e.target.closest(".tab");
+    if (!tab || tab.dataset.tab === view.tab) return;
+    view.tab = tab.dataset.tab; view.cat = "all";
+    track("tab", { section: view.tab });
+    load(false);
+  });
+  tabsEl.addEventListener("keydown", e => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const tabs = [...tabsEl.querySelectorAll(".tab")];
+    const i = tabs.indexOf(document.activeElement);
+    if (i < 0) return;
+    const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+    next.click(); setTimeout(() => { const t = tabsEl.querySelector(`[data-tab="${next.dataset.tab}"]`); if (t) t.focus(); }, 250);
+  });
+  $("#more-btn").addEventListener("click", () => load(true));
+  $("#ideas").innerHTML = IDEAS.map(t => `<button type="button" class="idea">${esc(t)}</button>`).join("");
+  $("#ideas").addEventListener("click", e => {
+    const b = e.target.closest(".idea");
+    if (!b) return;
+    qEl.value = b.textContent;
+    track("idea_click", { idea: b.textContent });
+    load(false);
+    document.getElementById("directory").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   });
   filtersEl.addEventListener("keydown", e => {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
@@ -307,16 +363,16 @@
     const i = chips.indexOf(document.activeElement);
     if (i < 0) return;
     const next = chips[(i + (e.key === "ArrowRight" ? 1 : chips.length - 1)) % chips.length];
-    next.click(); filtersEl.querySelector(`[data-cat="${next.dataset.cat}"]`).focus();
+    next.click(); setTimeout(() => { const c = filtersEl.querySelector(`[data-cat="${next.dataset.cat}"]`); if (c) c.focus(); }, 250);
   });
 
   let qT, qTrackT;
   qEl.addEventListener("input", () => {
-    clearTimeout(qT); qT = setTimeout(render, 80);
+    clearTimeout(qT); qT = setTimeout(() => load(false), 220);
     clearTimeout(qTrackT);
     qTrackT = setTimeout(() => {
       const q = qEl.value.trim().toLowerCase();
-      if (q.length >= 2) track("search", { query: q.slice(0, 60), results: listEl.children.length });
+      if (q.length >= 2) track("search", { query: q.slice(0, 60), results: view.total, tab: view.tab });
     }, 1200);
   });
   document.addEventListener("keydown", e => {
@@ -407,7 +463,7 @@
   }
 
   function openGate(skill) {
-    const total = SKILLS.length;
+    const total = fmtNum(view.all || 0);
     $("#gate-lede").textContent = `${skill ? `To copy “${skill.name}” and all ${total} skills,` : `To copy all ${total} skills,`} sign in with GitHub, ${auth.requireFollow ? `follow @${OWNER} and ` : ""}star the repo. It’s free. We check this every time you copy.`;
     track("gate_open", { skill: skill ? skill.id : undefined, signed_in: auth.signedIn });
     paintGate(); gateMessage();
@@ -442,7 +498,7 @@
     else {
       $("#launch-text").textContent = auth.signedIn
         ? `Signed in as @${auth.login}. ${auth.requireFollow ? "Follow and star" : "Star the repo"} on GitHub to finish unlocking.`
-        : `Sign in with GitHub, ${auth.requireFollow ? "follow and star" : "star the repo"} to copy any of the ${SKILLS.length} skills.`;
+        : `Sign in with GitHub, ${auth.requireFollow ? "follow and star" : "star the repo"} to copy any ${view.all ? `of the ${fmtNum(view.all)} skills` : "skill"}.`;
       bar.querySelector("[data-open-gate]").textContent = auth.signedIn ? "Finish unlocking" : "Unlock";
       bar.hidden = false;
     }
@@ -521,9 +577,15 @@
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => paintPond(false));
 
   /* ---------------- boot ---------------- */
-  renderFilters();
-  renderMeta();
-  render();
+  (async () => {
+    try {
+      const tax = await (await fetch("/data/taxonomy.json")).json();
+      SECTIONS = tax.sections;
+      SECTIONS.forEach(sec => { secLabel[sec.id] = sec.label; sec.cats.forEach(c => { catLabel[`${sec.id}/${c.id}`] = c.label; }); });
+    } catch { /* labels fall back to ids */ }
+    if (view.tab !== "all" && !SECTIONS.some(s => s.id === view.tab)) view.tab = "all";
+    load(false);
+  })();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => paintPond(true)); else paintPond(true);
 
   const signin = params.get("signin");

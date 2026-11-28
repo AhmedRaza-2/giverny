@@ -1,31 +1,34 @@
-# Adding a skill
+# Adding skills to Giverny
 
-Giverny lists skills that make Claude better at design or frontend work. To suggest one, open an issue with the repo link, or send a pull request.
+Giverny indexes public GitHub repos that contain `SKILL.md` files. You don't add skills one by one; you add the repo, and every skill in it is picked up and kept up to date.
 
-## Pull request
+## Suggest a repo
 
-Add an entry to [`data/skills.js`](data/skills.js) inside the right category block:
+Open an issue with the repo link, or send a pull request that adds it to [`data/sources.json`](data/sources.json):
 
-```js
-{
-  "id": "my-skill",                       // unique, lowercase, dashes
-  "name": "My Skill",
-  "by": "Your Name",                      // the person or org people know
-  "repo": "owner/repo",
-  "path": "skills/my-skill",              // optional: folder of the SKILL.md
-  "cat": "taste",                         // taste | systems | motion | review | platforms | visual | tools
-  "official": false,                      // true only if made by the company behind the tool
-  "desc": "One or two plain sentences on what it makes Claude do.",
-  "cmd": "npx skills add owner/repo --skill my-skill",
-  "plugin": { "add": "owner/repo", "install": "my-skill@my-marketplace" }, // optional
-  "ask": "An example request to try after installing.",
-  "stars": 0                              // the weekly Action fills this in
-}
+```json
+{ "repo": "owner/name", "section": "coding" }
+```
+
+`section` is one of `design`, `media`, `coding`, `marketing`, `productivity`. For a collection that spans several, use `"section": "auto", "fallback": "coding"` and each skill is filed by its description.
+
+Before opening the PR, check it indexes cleanly:
+
+```bash
+node scripts/index-skills.mjs --only owner/name && node scripts/build-public.mjs
 ```
 
 ## What gets accepted
 
-- The repo is public and has a `SKILL.md` (or a Claude Code plugin that ships one).
-- The install command works as written. Test it in a clean project.
-- It's about design, UI, UX, motion, accessibility, or frontend craft.
-- The description says what the skill does, without marketing language.
+- Public repos whose skills are meant for people to install, not a product's internal tooling.
+- Each skill has a `SKILL.md` with a `name` and a `description` that says what it does.
+- Original work, not a copy or translation of a repo that's already listed.
+- Nothing designed to harm people or systems you don't own.
+
+## Featured picks
+
+`api/_featured.js` holds hand-written entries with verified install commands. They rank first. Propose one in a PR with the install command you tested.
+
+## Search tuning
+
+If a search returns the wrong skills, add words to the matching category's `kw` list or to `intents` in [`data/taxonomy.json`](data/taxonomy.json), and include the query in your PR description.

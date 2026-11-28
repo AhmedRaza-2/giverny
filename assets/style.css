@@ -25,6 +25,7 @@
   --c-platforms: #3F7F99;
   --c-visual: #9A5B3F;
   --c-tools: #4B6163;
+  --c-design: #B9476F; --c-media: #C98A2C; --c-coding: #3F7F99; --c-marketing: #1D6A4D; --c-productivity: #7A69C4;
 
   --serif: "Young Serif", "Iowan Old Style", Georgia, serif;
   --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -43,6 +44,7 @@
     --shadow: 0 1px 0 rgba(0,0,0,.2), 0 16px 40px -20px rgba(0,0,0,.7);
     --c-taste: #F09BBC; --c-systems: #ABA0EB; --c-motion: #E3B05E; --c-review: #6BC79C;
     --c-platforms: #7DB7CF; --c-visual: #D79A7C; --c-tools: #A3B6B2;
+    --c-design: #F09BBC; --c-media: #E3B05E; --c-coding: #7DB7CF; --c-marketing: #6BC79C; --c-productivity: #ABA0EB;
     color-scheme: dark;
   }
 }
@@ -53,6 +55,7 @@
   --shadow: 0 1px 0 rgba(0,0,0,.2), 0 16px 40px -20px rgba(0,0,0,.7);
   --c-taste: #F09BBC; --c-systems: #ABA0EB; --c-motion: #E3B05E; --c-review: #6BC79C;
   --c-platforms: #7DB7CF; --c-visual: #D79A7C; --c-tools: #A3B6B2;
+    --c-design: #F09BBC; --c-media: #E3B05E; --c-coding: #7DB7CF; --c-marketing: #6BC79C; --c-productivity: #ABA0EB;
   color-scheme: dark;
 }
 
@@ -126,12 +129,31 @@ button, input { font: inherit; color: inherit; }
 .search kbd { position: absolute; right: 14px; font: 500 12px var(--mono); color: var(--ink-3); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; }
 .meta { margin: 14px 0 0; font-size: 14px; color: var(--ink-3); }
 
+/* ---------- ideas ---------- */
+.ideas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; max-width: 560px; }
+.idea { border: 1px dashed var(--line); background: transparent; color: var(--ink-2); padding: 5px 12px; border-radius: 999px; font-size: 13.5px; cursor: pointer; }
+.idea:hover { border-style: solid; color: var(--ink); border-color: var(--ink-3); }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line); margin-bottom: 14px; position: sticky; top: 0; z-index: 6; background: var(--paper); }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 12px 14px 11px; font-size: 15px; font-weight: 500; color: var(--ink-3); cursor: pointer; white-space: nowrap; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.tab .n { font-size: 12.5px; font-weight: 400; color: var(--ink-3); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.result-line { margin: 0 0 6px; font-size: 13.5px; color: var(--ink-3); min-height: 1.4em; }
+.more { display: flex; justify-content: center; padding: 24px 0 8px; }
+.badge.new { color: var(--lily-deep); background: color-mix(in srgb, var(--lily) 18%, transparent); }
+.badge.upd { color: var(--water); background: color-mix(in srgb, var(--water) 14%, transparent); }
+.badge.pick { color: var(--ink-2); background: var(--line-2); }
+.badge.best { color: var(--bridge-ink); background: var(--bridge); }
+.list.loading { opacity: .55; transition: opacity .15s; }
+
 /* ---------- filters ---------- */
 .directory { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter) 24px; }
 .filters {
   display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 16px; margin: 0 -2px;
-  scrollbar-width: none; position: sticky; top: 0; z-index: 5;
-  background: linear-gradient(var(--paper) 80%, transparent);
+  scrollbar-width: none;
 }
 .filters::-webkit-scrollbar { display: none; }
 .chip {
@@ -198,6 +220,7 @@ button, input { font: inherit; color: inherit; }
 .d-ask q { color: var(--ink); quotes: "“" "”"; }
 .d-links { display: flex; gap: 18px; font-size: 14px; }
 .d-links a { color: var(--water); text-underline-offset: 3px; }
+.d-links span { color: var(--ink-3); }
 
 .empty { padding: 48px 4px; color: var(--ink-2); }
 .empty p { margin: 0 0 6px; }
@@ -285,6 +308,7 @@ button, input { font: inherit; color: inherit; }
   .r-desc, .r-stars { padding-left: 17px; }
 }
 @media (max-width: 760px) {
+  .idea:nth-child(n+5) { display: none; }
   .hero { grid-template-columns: 1fr; }
   .pond { order: -1; aspect-ratio: auto; height: 120px; margin-bottom: -8px; }
   .steps { grid-template-columns: 1fr; gap: 24px; }

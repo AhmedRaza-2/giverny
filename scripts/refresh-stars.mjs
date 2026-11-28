@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Refreshes the "stars" numbers in data/skills.js from the GitHub API.
+// Refreshes the "stars" numbers of featured skills (api/_featured.js) from the GitHub API.
 // Usage: GITHUB_TOKEN=... node scripts/refresh-stars.mjs
 import { readFile, writeFile } from "node:fs/promises";
 
-const FILE = new URL("../api/_skills.js", import.meta.url);
+const FILE = new URL("../api/_featured.js", import.meta.url);
 const src = await readFile(FILE, "utf8");
 const repos = [...new Set([...src.matchAll(/"repo":\s*"([^"]+)"/g)].map(m => m[1]))];
 const headers = { Accept: "application/vnd.github+json", "User-Agent": "giverny-refresh" };
@@ -32,5 +32,4 @@ out += src.slice(last);
 const today = new Date().toISOString().slice(0, 10);
 out = out.replace(/export const UPDATED = "[^"]*"/, `export const UPDATED = "${today}"`);
 await writeFile(FILE, out);
-await import("./build-public.mjs");
 console.log(`Checked ${Object.keys(stars).length}/${repos.length} repos, updated ${changed} star counts.`);

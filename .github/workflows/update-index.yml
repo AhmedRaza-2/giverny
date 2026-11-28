@@ -1,0 +1,48 @@
+name: Update skill index
+
+# Every Monday: re-read every source repo, pick up new and updated skills, drop deleted ones,
+# refresh star counts, and look for new skill repos to review. Commits the result; Vercel redeploys.
+on:
+  schedule:
+    - cron: "17 5 * * 1"   # Mondays 05:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-index
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Index all sources
+        run: node scripts/index-skills.mjs --cache "$RUNNER_TEMP/giverny-index"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Refresh featured star counts
+        run: node scripts/refresh-stars.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build server files
+        run: node scripts/build-public.mjs
+      - name: Find new skill repos to review
+        run: node scripts/discover.mjs --min 500
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit if anything changed
+        run: |
+          if git diff --quiet; then echo "No changes"; exit 0; fi
+          summary=$(node -e 'const c=require("./data/changes.json");console.log(`+${c.added.length} new, ${c.updated.length} updated, -${c.removed.length} removed`)')
+          git config user.name "giverny-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Update skill index: $summary"
+          git push

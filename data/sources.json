@@ -1,0 +1,1651 @@
+{
+ "_about": "Repos the indexer reads. section = where its skills go; 'auto' classifies each skill by its description and uses 'fallback' when unsure. Add a repo here and the weekly Action indexes it.",
+ "minStars": 100,
+ "sources": [
+  {
+   "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+   "section": "design"
+  },
+  {
+   "repo": "pbakaus/impeccable",
+   "section": "design"
+  },
+  {
+   "repo": "Leonxlnx/taste-skill",
+   "section": "design"
+  },
+  {
+   "repo": "emilkowalski/skills",
+   "section": "design"
+  },
+  {
+   "repo": "ibelick/ui-skills",
+   "section": "design"
+  },
+  {
+   "repo": "Dammyjay93/interface-design",
+   "section": "design"
+  },
+  {
+   "repo": "oil-oil/oil-ui",
+   "section": "design"
+  },
+  {
+   "repo": "superdesigndev/superdesign-skill",
+   "section": "design"
+  },
+  {
+   "repo": "bitjaru/styleseed",
+   "section": "design"
+  },
+  {
+   "repo": "agiwhitelist/auteur",
+   "section": "design"
+  },
+  {
+   "repo": "Owl-Listener/designer-skills",
+   "section": "design"
+  },
+  {
+   "repo": "bergside/awesome-design-skills",
+   "section": "design"
+  },
+  {
+   "repo": "dembrandt/dembrandt-skills",
+   "section": "design"
+  },
+  {
+   "repo": "greensock/gsap-skills",
+   "section": "design"
+  },
+  {
+   "repo": "jakubkrehel/make-interfaces-feel-better",
+   "section": "design"
+  },
+  {
+   "repo": "meodai/skill.color-expert",
+   "section": "design"
+  },
+  {
+   "repo": "ehmo/platform-design-skills",
+   "section": "design"
+  },
+  {
+   "repo": "raintree-technology/hig-doctor",
+   "section": "design"
+  },
+  {
+   "repo": "figma/mcp-server-guide",
+   "section": "design"
+  },
+  {
+   "repo": "mobbin/skills",
+   "section": "design"
+  },
+  {
+   "repo": "heydamir/unslop",
+   "section": "design"
+  },
+  {
+   "repo": "Motionsites-AI/claude-skill",
+   "section": "design"
+  },
+  {
+   "repo": "coleam00/excalidraw-diagram-skill",
+   "section": "design"
+  },
+  {
+   "repo": "zarazhangrui/frontend-slides",
+   "section": "design"
+  },
+  {
+   "repo": "nicobailon/visual-explainer",
+   "section": "design"
+  },
+  {
+   "repo": "heygen-com/hyperframes",
+   "section": "media"
+  },
+  {
+   "repo": "remotion-dev/skills",
+   "section": "media"
+  },
+  {
+   "repo": "digitalsamba/claude-code-video-toolkit",
+   "section": "media"
+  },
+  {
+   "repo": "mromidev/claude-animated-shorts",
+   "section": "media"
+  },
+  {
+   "repo": "haidrrrry/claude-remotion-skill",
+   "section": "media"
+  },
+  {
+   "repo": "elevenlabs/skills",
+   "section": "media"
+  },
+  {
+   "repo": "fal-ai-community/skills",
+   "section": "media"
+  },
+  {
+   "repo": "obra/superpowers",
+   "section": "coding"
+  },
+  {
+   "repo": "mattpocock/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "trailofbits/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "cloudflare/security-audit-skill",
+   "section": "coding"
+  },
+  {
+   "repo": "cloudflare/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "supabase/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "stripe/ai",
+   "section": "coding"
+  },
+  {
+   "repo": "better-auth/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "hashicorp/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "antonbabenko/terraform-skill",
+   "section": "coding"
+  },
+  {
+   "repo": "neondatabase/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "ClickHouse/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "duckdb/duckdb-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "mongodb/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "redis/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "qdrant/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "firebase/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "auth0/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "apollographql/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "getsentry/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "microsoft/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "NVIDIA/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "angular/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "WordPress/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "JetBrains/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "samber/cc-skills-golang",
+   "section": "coding"
+  },
+  {
+   "repo": "Jeffallan/claude-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "BehiSecc/VibeSec-Skill",
+   "section": "coding"
+  },
+  {
+   "repo": "SawyerHood/dev-browser",
+   "section": "coding"
+  },
+  {
+   "repo": "browserbase/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "firecrawl/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "brave/brave-search-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "czlonkowski/n8n-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "coderabbitai/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "LambdaTest/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "datadog-labs/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "muratcankoylan/Agent-Skills-for-Context-Engineering",
+   "section": "coding"
+  },
+  {
+   "repo": "NeoLabHQ/context-engineering-kit",
+   "section": "coding"
+  },
+  {
+   "repo": "nidhinjs/prompt-master",
+   "section": "coding"
+  },
+  {
+   "repo": "jezweb/claude-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "sanity-io/agent-toolkit",
+   "section": "coding"
+  },
+  {
+   "repo": "resend/resend-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "mblode/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "addyosmani/web-quality-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "lackeyjb/playwright-skill",
+   "section": "coding"
+  },
+  {
+   "repo": "CloudAI-X/threejs-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "dgreenheck/webgpu-claude-skill",
+   "section": "coding"
+  },
+  {
+   "repo": "twostraws/SwiftUI-Agent-Skill",
+   "section": "coding"
+  },
+  {
+   "repo": "AvdLee/SwiftUI-Agent-Skill",
+   "section": "coding"
+  },
+  {
+   "repo": "expo/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "callstackincubator/agent-skills",
+   "section": "coding"
+  },
+  {
+   "repo": "huggingface/skills",
+   "section": "coding"
+  },
+  {
+   "repo": "coreyhaines31/marketingskills",
+   "section": "marketing"
+  },
+  {
+   "repo": "AgriciDaniel/claude-seo",
+   "section": "marketing"
+  },
+  {
+   "repo": "zubair-trabzada/geo-seo-claude",
+   "section": "marketing"
+  },
+  {
+   "repo": "kostja94/marketing-skills",
+   "section": "marketing"
+  },
+  {
+   "repo": "OpenClaudia/openclaudia-skills",
+   "section": "marketing"
+  },
+  {
+   "repo": "realkimbarrett/advertising-skills",
+   "section": "marketing"
+  },
+  {
+   "repo": "CosmoBlk/email-marketing-bible",
+   "section": "marketing"
+  },
+  {
+   "repo": "typefully/agent-skills",
+   "section": "marketing"
+  },
+  {
+   "repo": "Linked-API/linkedin-skills",
+   "section": "marketing"
+  },
+  {
+   "repo": "deanpeters/Product-Manager-Skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "phuryn/pm-skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "Digidai/product-manager-skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "googleworkspace/cli",
+   "section": "productivity"
+  },
+  {
+   "repo": "coleam00/second-brain-skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "haowjy/creative-writing-skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "aiwithremy/claude-skills-llm-council",
+   "section": "productivity"
+  },
+  {
+   "repo": "staruhub/ClaudeSkills",
+   "section": "productivity"
+  },
+  {
+   "repo": "K-Dense-AI/scientific-agent-skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "posit-dev/skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "ognjengt/founder-skills",
+   "section": "productivity"
+  },
+  {
+   "repo": "anthropics/skills",
+   "section": "auto",
+   "fallback": "productivity"
+  },
+  {
+   "repo": "anthropics/knowledge-work-plugins",
+   "section": "auto",
+   "fallback": "productivity"
+  },
+  {
+   "repo": "google-labs-code/stitch-skills",
+   "section": "auto",
+   "fallback": "design"
+  },
+  {
+   "repo": "vercel-labs/agent-skills",
+   "section": "auto",
+   "fallback": "coding"
+  },
+  {
+   "repo": "wondelai/skills",
+   "section": "auto",
+   "fallback": "productivity"
+  },
+  {
+   "repo": "garrytan/gstack",
+   "section": "auto",
+   "fallback": "coding"
+  },
+  {
+   "repo": "wshobson/agents",
+   "section": "auto",
+   "fallback": "coding"
+  },
+  {
+   "repo": "openai/skills",
+   "section": "auto",
+   "fallback": "coding"
+  },
+  {
+   "repo": "alirezarezvani/claude-skills",
+   "section": "auto",
+   "fallback": "coding"
+  },
+  {
+   "repo": "google/skills",
+   "section": "auto",
+   "fallback": "coding"
+  },
+  {
+   "repo": "MiniMax-AI/skills",
+   "section": "auto",
+   "fallback": "media"
+  },
+  {
+   "repo": "JimLiu/baoyu-skills",
+   "section": "auto",
+   "fallback": "media"
+  },
+  {
+   "repo": "rampstackco/claude-skills",
+   "section": "auto",
+   "fallback": "marketing"
+  },
+  {
+   "repo": "yan-labs/yan-skills",
+   "section": "auto",
+   "fallback": "marketing"
+  },
+  {
+   "repo": "davila7/claude-code-templates",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "mukul975/Anthropic-Cybersecurity-Skills",
+   "section": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "davepoon/buildwithclaude",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "nexu-io/open-design",
+   "section": "design",
+   "via": "discovery"
+  },
+  {
+   "repo": "affaan-m/ECC",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "nexu-io/openmotion",
+   "section": "media",
+   "via": "discovery"
+  },
+  {
+   "repo": "MengTo/Skills",
+   "section": "auto",
+   "fallback": "design",
+   "via": "discovery"
+  },
+  {
+   "repo": "scenario-labs/skills",
+   "section": "auto",
+   "fallback": "media",
+   "via": "discovery"
+  },
+  {
+   "repo": "parcadei/Continuous-Claude-v3",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "browser-act/skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Orchestra-Research/AI-Research-SKILLs",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "danielmiessler/LifeOS",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "tech-leads-club/agent-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "arjun988/blender-skills",
+   "section": "media",
+   "via": "discovery"
+  },
+  {
+   "repo": "OpenMontageInc/OpenMontage",
+   "section": "media",
+   "via": "discovery"
+  },
+  {
+   "repo": "wanshuiyin/Auto-claude-code-research-in-sleep",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "Yeachan-Heo/oh-my-claudecode",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "HKUDS/CLI-Anything",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "garrytan/gbrain",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "Donchitos/Claude-Code-Game-Studios",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "tradermonty/claude-trading-skills",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "michael-denyer/pstack-claude",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "nyldn/claude-octopus",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "backnotprop/pstack",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "anthropics/claude-plugins-official",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "irinabuht12-oss/marketing-skills",
+   "section": "marketing",
+   "via": "discovery"
+  },
+  {
+   "repo": "Ar9av/obsidian-wiki",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "EveryInc/compound-engineering-plugin",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "thedotmack/claude-mem",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "AgriciDaniel/claude-ads",
+   "section": "marketing",
+   "via": "discovery"
+  },
+  {
+   "repo": "EL4CTEO/blender-skills",
+   "section": "media",
+   "via": "discovery"
+  },
+  {
+   "repo": "larksuite/cli",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "addyosmani/agent-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "plugin87/ux-ui-agent-skills",
+   "section": "design",
+   "via": "discovery"
+  },
+  {
+   "repo": "agenticnotetaking/arscontexta",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "Yuan1z0825/nature-skills",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "zLanqing/codex-claude-academic-skills",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "JuliusBrussee/caveman",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Gentleman-Programming/gentle-ai",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "kajisho5/ffmpeg-skill",
+   "section": "media",
+   "via": "discovery"
+  },
+  {
+   "repo": "rohitg00/agentmemory",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "jakubkrehel/skills",
+   "section": "design",
+   "via": "discovery"
+  },
+  {
+   "repo": "JetBrains/thinkrail",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "AgriciDaniel/claude-obsidian",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "2025Emma/vibe-coding-cn",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "zenstory-ai/oh-story-claudecode",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "FlorianBruniaux/claude-code-ultimate-guide",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ciembor/agent-rules-books",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "rehan-remade/universal-modder",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "zenstory-ai/drama-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "different-ai/openwork",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Jakeschincariol/instagram-agent-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ScrapeCreators/social-media-research-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "sergebulaev/linkedin-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ljagiello/ctf-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "iOfficeAI/OfficeCLI",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Jakeschincariol/replica-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Jakeschincariol/youtube-agent-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Jakeschincariol/day-trader-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "WorldFlowAI/everything-claude-code",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Jakeschincariol/linkedin-agent-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Jakeschincariol/founder-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "NanmiCoder/cc-haha",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Egonex-AI/Understand-Anything",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "shanraisshan/claude-code-best-practice",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "voyager-crew/voyager",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ykdojo/claude-code-tips",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "tw93/Waza",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "krillinai/OpenCreator",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "luongnv89/claude-howto",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "sipeed/picoclaw",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "google/elephant-goldfish-model",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Ryze-AI-Adgent/open-seo-mcp-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "obsidianmd/obsidian-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "conorbronsdon/avoid-ai-writing",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "agno-agi/agno",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "MemTensor/MemOS",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "eternityspring/shuohao-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "glitternetwork/pinme",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "wesammustafa/Claude-Code-Quest",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "eigent-ai/eigent",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "miqdadbadjuber/anti-slop",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ChrisWiles/claude-code-showcase",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "xerrors/Yuxi",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "DietrichGebert/ponytail",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "tt-a1i/archify",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "HKUDS/DeepTutor",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "yamadashy/repomix",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "OthmanAdi/planning-with-files",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Devolutions/UniGetUI",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "HKUDS/AI-Trader",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "KKKKhazix/khazix-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "jackwener/OpenCLI",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "charmbracelet/crush",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "pascalorg/editor",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "diet103/claude-code-infrastructure-showcase",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "epoko77-ai/im-not-ai",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Imbad0202/academic-research-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "mksglu/context-mode",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "zhayujie/CowAgent",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ai-job-search-dev/ai-job-search",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "vercel-labs/skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "citrolabs/ego-lite",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "browser-use/video-use",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Manavarya09/design-extract",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "latent-spaces/brag",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "mutonby/openshorts",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "htdt/godogen",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alibaba/open-code-review",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "LibreChat-AI/LibreChat",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "reactive-resume/reactive-resume",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "TencentCloud/TencentDB-Agent-Memory",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "guillaumemeyer/watermarks-remover",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "eclipse-theia/theia",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "revfactory/harness",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Appllama/appllama-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "nykooi1/vibe-wise",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Adkid-Zephyr/anti-defensive-writing-Skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "hugohe3/ppt-master",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "cathrynlavery/diagram-design",
+   "section": "design",
+   "via": "discovery"
+  },
+  {
+   "repo": "hardikpandya/stop-slop",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "patch-gg/pixelfx",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "SimoneAvogadro/android-reverse-engineering-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alchaincyf/huashu-art-motion",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Cocoon-AI/architecture-diagram-generator",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "htmlstreamofficial/preline",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "dmmulroy/anti-slop",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "zarazhangrui/codebase-to-course",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "nateherkai/scroll-craft",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "yanliudesign/mono-color-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "oil-oil/oil-motion",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Vincentwei1021/video-shotcraft",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "bradautomates/claude-video",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "kaomei/stickman-video-director",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "kaankiziltug/logo-design-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Oldcircle/geo-sleuth",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "feitangyuan/onetake",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "geekjourneyx/md2wechat-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alchaincyf/huashu-motion",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Alisa0808/vox-director",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "multica-ai/andrej-karpathy-skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "mvanhorn/last30days-skill",
+   "section": "productivity",
+   "via": "discovery"
+  },
+  {
+   "repo": "ayghri/i-have-adhd",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "1c7/chinese-independent-developer",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Nutlope/hallmark",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alchaincyf/nuwa-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alchaincyf/huashu-design",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "op7418/guizang-ppt-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "wheresryan22/anatomy",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "NVIDIA/SkillSpector",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "titanwings/distilly",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "kataras/iris",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "lemomo-ai/lemo-opuscar",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "microsoft/SkillOpt",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "browser-use/browser-harness",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "yusufkaraaslan/Skill_Seekers",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "NevaMind-AI/memU",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "JuneYaooo/rea-video",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "janestreet/agent_skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Agents365-ai/drawio-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "erkamyaman/rust-anything",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alchaincyf/zhangxuefeng-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "tigerless-labs/autoharness",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "eze-is/web-access",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "gosom/google-maps-scraper",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "ningzimu/codex-ppt-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "mjmirza/app-store-compliance",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "xingkongliang/skills-manager",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "PleasePrompto/notebooklm-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "gepa-ai/gepa",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "refly-ai/refly",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "alchaincyf/darwin-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "haydenschmitty/floorplan",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "uditgoenka/autoresearch",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "QingYunA/answer-me-with-html",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "liustack/modlens",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "zenbu-labs/terminal-browser",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "EL4CTEO/fast-anything",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "jangviktor-web/nihaixia",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "rebelytics/one-skill-to-rule-them-all",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "NarratorAI-Studio/narrator-ai-cli-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "hotcoffeeshake/tong-jincheng-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "tw93/Kami",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "op7418/guizang-social-card-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "blader/humanizer",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "datalab-to/marker",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "virgiliojr94/book-to-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "op7418/Humanizer-zh",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "teng-lin/notebooklm-py",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "chuspeeism/dashi-ppt-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "Master-cai/Research-Paper-Writing-Skills",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "automazeio/ccpm",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "larashero3-dotcom/lieflat-charts",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "danyuchn/asd-ste100-skill",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "joeseesun/qiaomu-anything-to-notebooklm",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "AIScientists-Dev/academic-humanizer",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  },
+  {
+   "repo": "eugeniughelbur/obsidian-second-brain",
+   "section": "auto",
+   "fallback": "coding",
+   "via": "discovery"
+  }
+ ]
+}

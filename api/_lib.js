@@ -1,6 +1,5 @@
 // Shared server code for Giverny's API. Files starting with "_" are not exposed as endpoints on Vercel.
 import crypto from "node:crypto";
-import { SKILLS } from "./_skills.js";
 
 export const CONF = {
   owner: process.env.GIVERNY_OWNER || "AhmedRaza-2",
@@ -153,11 +152,16 @@ export async function checkAccess(session) {
 }
 
 /* ---------- skills ---------- */
-export const findSkill = id => SKILLS.find(s => s.id === id);
+// Loaded on first use, so endpoints that don't need the catalog (sign-in, status) start fast.
+let byId = null;
+export async function findSkill(id) {
+  if (!byId) { const { SKILLS } = await import("./_skills.js"); byId = new Map(SKILLS.map(s => [s.id, s])); }
+  return byId.get(id);
+}
 
 const repoUrl = s => `https://github.com/${s.repo}${s.path ? "/tree/main/" + s.path : ""}`;
-const pluginCli = p => (p.add ? `claude plugin marketplace add ${p.add} && ` : "") + `claude plugin install ${p.install}`;
-const pluginSlash = p => (p.add ? `/plugin marketplace add ${p.add}\n` : "") + `/plugin install ${p.install}`;
+const pluginCli = p => [p.add && `claude plugin marketplace add ${p.add}`, p.install && `claude plugin install ${p.install}`].filter(Boolean).join(" && ");
+const pluginSlash = p => [p.add && `/plugin marketplace add ${p.add}`, p.install ? `/plugin install ${p.install}` : "/plugin"].filter(Boolean).join("\n");
 const nonInteractive = cmd => /npx (-y )?skills(@latest)? add/.test(cmd) && !/\s-y(\s|$)/.test(cmd) ? cmd + " -a claude-code -y" : cmd;
 
 export function buildPrompt(s, site) {
@@ -176,6 +180,7 @@ export function buildPrompt(s, site) {
   const lines = [`Install "${s.name}" for Claude Code from ${repoUrl(s)}.`, ``, `1. Run this in my terminal:`, `   ${nonInteractive(s.cmd)}`];
   if (s.plugin && !s.cmd.startsWith("claude plugin")) lines.push(`   If that fails, install it as a Claude Code plugin: ${pluginCli(s.plugin)}`);
   if (s.alt) lines.push(`   Fallback: ${s.alt}`);
+  if (s.note) lines.push(`   Note: ${s.note}`);
   lines.push(
     `2. If none of that works, clone the repo and copy the folder that contains SKILL.md into ~/.claude/skills/.`,
     `3. Confirm it installed (a plugin may need a Claude Code restart), then show me how to use it. Example: "${s.ask}"`,
@@ -193,6 +198,7 @@ export function reveal(s, site) {
     slash: s.plugin && !s.cmd.startsWith("claude plugin") ? pluginSlash(s.plugin) : null,
     alt: s.alt || null,
     ask: s.ask,
+    note: s.note || null,
     kind: s.kind || "skill"
   };
 }
